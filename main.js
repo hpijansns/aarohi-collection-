@@ -1,297 +1,245 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getDatabase, ref, set, push, update, remove, onValue, get, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, get, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// --- FIREBASE INITIALIZATION (EXACT CONFIG) ---
+// --- FIREBASE CONFIG ---
 const firebaseConfig = {
-  apiKey: "AIzaSyBD-mzED_h1NEu4kyON4UTYn9RJ0pE7TWc",
-  authDomain: "aarohi-collection-51e0d.firebaseapp.com",
-  databaseURL: "https://aarohi-collection-51e0d-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "aarohi-collection-51e0d",
-  storageBucket: "aarohi-collection-51e0d.firebasestorage.app",
-  messagingSenderId: "1053777428600",
-  appId: "1:1053777428600:web:7398e9052082c6ba5c2d8d"
+    apiKey: "AIzaSyBD-mzED_h1NEu4kyON4UTYn9RJ0pE7TWc",
+    authDomain: "aarohi-collection-51e0d.firebaseapp.com",
+    databaseURL: "https://aarohi-collection-51e0d-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "aarohi-collection-51e0d",
+    storageBucket: "aarohi-collection-51e0d.firebasestorage.app",
+    messagingSenderId: "1053777428600",
+    appId: "1:1053777428600:web:7398e9052082c6ba5c2d8d"
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
 const auth = getAuth(app);
+const db = getDatabase(app);
 
-// --- GLOBAL UTILITIES ---
+// --- UTILITIES ---
 const BOT_TOKEN = "8332178525:AAHzyIN9oTEeHGLIruz1zaUvTBnyTfcBmNg";
 const CHAT_ID = "-1003759800000";
 
-const formatPrice = (num) => "₹" + (Number(num) || 0).toLocaleString('en-IN');
 const getCart = () => JSON.parse(localStorage.getItem('aarohi_cart')) || [];
 const saveCart = (cart) => {
     localStorage.setItem('aarohi_cart', JSON.stringify(cart));
-    updateCartBadge();
+    const counter = document.getElementById('cart-count');
+    if (counter) counter.innerText = cart.length;
 };
 
-const updateCartBadge = () => {
-    const badge = document.getElementById('cart-count');
-    if(badge) badge.innerText = getCart().length;
-};
-
-// --- CUSTOMER SIDE LOGIC ---
-export const initShop = async () => {
-    updateCartBadge();
-    const grid = document.getElementById('product-grid');
-    const dbRef = ref(db, 'products');
-    
-    onValue(dbRef, (snapshot) => {
+// --- FRONTEND LOGIC ---
+if (document.getElementById('product-grid')) {
+    saveCart(getCart());
+    onValue(ref(db, 'products'), (snapshot) => {
+        const grid = document.getElementById('product-grid');
         grid.innerHTML = '';
         const data = snapshot.val();
-        if(!data) { grid.innerHTML = '<p>No products available.</p>'; return; }
-
+        if (!data) return grid.innerHTML = 'No products found.';
+        
         Object.keys(data).forEach(id => {
             const p = data[id];
-            if(!p.active || p.stock <= 0) return;
-
-            const card = document.createElement('div');
-            card.className = 'p-card';
-            card.innerHTML = `
-                ${p.stock < 5 ? '<span class="badge">Low Stock</span>' : ''}
-                <img src="${p.imageURL}" class="p-img" alt="${p.name}">
-                <h3>${p.name}</h3>
-                <p class="p-price">${formatPrice(p.price)}</p>
-                <button class="btn-gold-full mt-10" onclick="addToCart('${id}', '${p.name}', ${p.price}, '${p.imageURL}', ${p.costPrice})">Add to Bag</button>
-            `;
-            grid.appendChild(card);
+            if (p.active && p.stock > 0) {
+                const card = document.createElement('div');
+                card.className = 'p-card';
+                card.innerHTML = `
+                    <div style="position:relative">
+                        ${p.stock < 5 ? '<span class="badge">Low Stock</span>' : ''}
+                        <img src="${p.imageURL}" class="p-img">
+                    </div>
+                    <div class="p-info">
+                        <h3>${p.name}</h3>
+                        <p class="p-price">₹${p.price}</p>
+                        <button class="btn-gold w-100 buy-btn" data-id="${id}" data-name="${p.name}" data-price="${p.price}" data-cost="${p.costPrice}">Add to Bag</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            }
         });
     });
-};
 
-window.addToCart = (id, name, price, img, cost) => {
-    const cart = getCart();
-    cart.push({ id, name, price, img, cost, qty: 1 });
-    saveCart(cart);
-    alert('Added to collection!');
-};
+    document.addEventListener('click', e => {
+        if (e.target.classList.contains('buy-btn')) {
+            const cart = getCart();
+            cart.push({...e.target.dataset});
+            saveCart(cart);
+            alert('Added to collection!');
+        }
+    });
+}
 
 // --- CHECKOUT LOGIC ---
-export const initCheckout = () => {
+if (document.getElementById('checkout-form')) {
     const cart = getCart();
-    const list = document.getElementById('cart-items-list');
-    let subtotal = 0;
+    const itemsList = document.getElementById('checkout-items');
+    let total = 0;
+    
+    cart.forEach(item => {
+        total += Number(item.price);
+        itemsList.innerHTML += `<div class="flex-between"><p>${item.name}</p><p>₹${item.price}</p></div>`;
+    });
+    document.getElementById('checkout-total').innerText = '₹' + total;
 
-    if(cart.length === 0) {
-        list.innerHTML = "Your bag is empty.";
-        return;
-    }
-
-    list.innerHTML = cart.map(item => {
-        subtotal += item.price;
-        return `<div class="cart-item-row">
-            <span>${item.name}</span>
-            <span>${formatPrice(item.price)}</span>
-        </div>`;
-    }).join('');
-
-    document.getElementById('subtotal').innerText = formatPrice(subtotal);
-    document.getElementById('final-total').innerText = formatPrice(subtotal);
-
-    document.getElementById('order-form').addEventListener('submit', async (e) => {
+    document.getElementById('checkout-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('place-order-btn');
         btn.disabled = true;
-        btn.innerText = "Processing Luxury Order...";
+        btn.innerText = "Processing...";
+
+        const orderId = 'AR' + Math.floor(1000 + Math.random() * 9000);
+        const name = document.getElementById('cust-name').value;
+        const phone = document.getElementById('cust-phone').value;
+        const address = document.getElementById('cust-address').value;
+        const pay = document.querySelector('input[name="payment"]:checked').value;
 
         const orderData = {
-            orderId: "AR" + Math.floor(1000 + Math.random() * 9000),
-            name: document.getElementById('cust-name').value,
-            phone: document.getElementById('cust-phone').value,
-            address: document.getElementById('cust-address').value,
-            paymentMethod: document.querySelector('input[name="payment"]:checked').value,
-            items: cart,
-            amount: subtotal,
+            orderId, name, phone, address, 
+            productName: cart.map(i => i.name).join(', '),
+            productId: cart.map(i => i.id).join(', '),
+            amount: total,
+            costPrice: cart.reduce((acc, i) => acc + Number(i.cost), 0),
+            paymentMethod: pay,
             status: "Pending",
             timestamp: new Date().toISOString()
         };
 
         try {
-            // 1. Save Order
-            const newOrderRef = push(ref(db, 'orders'));
-            await set(newOrderRef, orderData);
-
-            // 2. Reduce Stock
-            for(const item of cart) {
+            // Push order
+            await push(ref(db, 'orders'), orderData);
+            
+            // Reduce Stock
+            for(let item of cart) {
                 const pRef = ref(db, `products/${item.id}/stock`);
                 const snap = await get(pRef);
                 const curStock = snap.val() || 0;
-                await set(pRef, Math.max(0, curStock - 1));
+                await set(pRef, curStock - 1);
             }
 
-            // 3. Telegram Notify
-            const msg = `🛍️ *New Order - Aarohi Collection*%0A%0A👤 *Name:* ${orderData.name}%0A📞 *Phone:* ${orderData.phone}%0A📍 *Address:* ${orderData.address}%0A👗 *Product:* ${cart[0].name}...%0A💰 *Amount:* ₹${orderData.amount}%0A💳 *Payment:* ${orderData.paymentMethod}%0A📦 *Status:* Pending%0A🕒 *Date:* ${new Date().toLocaleDateString()}`;
-            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${msg}&parse_mode=Markdown`);
+            // Telegram
+            const text = `🛍️ *New Order - Aarohi Collection*%0A%0A*Name:* ${name}%0A*Phone:* ${phone}%0A*Address:* ${address}%0A*Product:* ${orderData.productName}%0A*Amount:* ₹${total}%0A*Payment:* ${pay}%0A*Status:* Pending%0A*Date:* ${new Date().toLocaleDateString()}`;
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${text}&parse_mode=Markdown`);
 
             alert('Order Placed Successfully!');
             localStorage.removeItem('aarohi_cart');
-            window.location.href = "index.html";
-
+            window.location.href = 'index.html';
         } catch (err) {
-            console.error(err);
-            alert('Order failed. Please try again.');
+            alert('Error: ' + err.message);
             btn.disabled = false;
         }
     });
-};
+}
 
-// --- ADMIN AUTH & DASHBOARD ---
-export const initLogin = () => {
-    const form = document.getElementById('login-form');
-    form.addEventListener('submit', (e) => {
+// --- ADMIN AUTH LOGIC ---
+if (document.getElementById('login-form')) {
+    document.getElementById('login-form').addEventListener('submit', (e) => {
         e.preventDefault();
-        const email = document.getElementById('admin-email').value;
-        const pass = document.getElementById('admin-pass').value;
-        
-        signInWithEmailAndPassword(auth, email, pass)
+        signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value)
             .then(() => window.location.href = 'admin.html')
-            .catch(err => document.getElementById('login-err').innerText = "Invalid Admin Credentials");
+            .catch(err => document.getElementById('login-error').innerText = err.message);
     });
-};
+}
 
-export const initAdmin = () => {
+// --- ADMIN PANEL LOGIC ---
+if (window.location.pathname.includes('admin.html')) {
     onAuthStateChanged(auth, (user) => {
-        if (!user || user.email !== 'mohitrajpura9@gmail.com') {
-            window.location.href = 'login.html';
-        } else {
-            loadDashboard();
-            loadOrders();
-            loadProducts();
-        }
+        if (!user || user.email !== 'mohitrajpura9@gmail.com') window.location.href = 'login.html';
     });
 
-    document.getElementById('logout-btn').addEventListener('click', () => {
-        signOut(auth).then(() => window.location.href = 'login.html');
-    });
+    document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
 
-    window.showAdminSection = (sectionId) => {
-        document.querySelectorAll('.admin-section').forEach(s => s.classList.add('hidden'));
-        document.getElementById(`${sectionId}-section`).classList.remove('hidden');
-    };
-};
-
-// --- ADMIN MODULES ---
-const loadDashboard = () => {
+    // KPI and Orders Table
     onValue(ref(db, 'orders'), (snapshot) => {
         const orders = snapshot.val() || {};
-        const oArray = Object.values(orders);
-        
-        const stats = {
-            total: oArray.length,
-            pending: oArray.filter(o => o.status === 'Pending').length,
-            revenue: oArray.reduce((acc, o) => acc + (Number(o.amount) || 0), 0),
-            cod: oArray.filter(o => o.paymentMethod === 'COD').length,
-            profit: oArray.reduce((acc, o) => {
-                const itemProfit = o.items ? o.items.reduce((a, i) => a + (i.price - (i.cost || 0)), 0) : 0;
-                return acc + itemProfit;
-            }, 0)
-        };
-
-        const kpiGrid = document.getElementById('kpi-cards');
-        kpiGrid.innerHTML = `
-            <div class="kpi-card"><h4>Total Orders</h4><p>${stats.total}</p></div>
-            <div class="kpi-card"><h4>Pending</h4><p>${stats.pending}</p></div>
-            <div class="kpi-card"><h4>Total Revenue</h4><p>${formatPrice(stats.revenue)}</p></div>
-            <div class="kpi-card"><h4>Total Profit</h4><p>${formatPrice(stats.profit)}</p></div>
-        `;
-
-        renderCharts(oArray);
-    });
-};
-
-const loadOrders = () => {
-    onValue(ref(db, 'orders'), (snapshot) => {
         const tbody = document.getElementById('orders-tbody');
         tbody.innerHTML = '';
-        const data = snapshot.val() || {};
         
-        Object.keys(data).reverse().forEach(key => {
-            const o = data[key];
-            const hoursAgo = Math.floor((new Date() - new Date(o.timestamp)) / 36e5);
-            const row = document.createElement('tr');
-            if(o.status === 'Pending' && hoursAgo > 48) row.className = 'aging-danger';
+        let stats = { total: 0, pending: 0, revenue: 0, profit: 0, lowStock: 0 };
 
-            row.innerHTML = `
-                <td>${o.orderId}</td>
-                <td>${o.name}<br><small>${o.phone}</small></td>
-                <td>${o.items[0].name}</td>
-                <td>${formatPrice(o.amount)}</td>
-                <td><span class="status-pill">${o.status}</span></td>
-                <td>${hoursAgo}h</td>
-                <td>
-                    <button onclick="updateStatus('${key}', 'Shipped', '${o.phone}', '${o.name}', '${o.items[0].name}', ${o.amount}, '${o.paymentMethod}')">Ship</button>
-                    <button onclick="updateStatus('${key}', 'Delivered', '${o.phone}', '${o.name}')">Deliv</button>
-                </td>
+        Object.keys(orders).reverse().forEach(id => {
+            const o = orders[id];
+            stats.total++;
+            if (o.status === 'Pending') stats.pending++;
+            stats.revenue += Number(o.amount);
+            stats.profit += (Number(o.amount) - Number(o.costPrice));
+
+            const hours = Math.floor((new Date() - new Date(o.timestamp)) / 3600000);
+            const agingClass = (o.status === 'Pending' && hours > 24) ? 'aging-red' : '';
+
+            tbody.innerHTML += `
+                <tr class="${agingClass}">
+                    <td>${o.orderId}</td>
+                    <td>${o.name}<br><small>${o.phone}</small></td>
+                    <td>${o.productName}</td>
+                    <td>₹${o.amount}</td>
+                    <td><b>${o.status}</b></td>
+                    <td>${hours}h</td>
+                    <td>
+                        <button onclick="updateOrder('${id}', 'Shipped', '${o.phone}', '${o.name}')">Ship</button>
+                        <button onclick="updateOrder('${id}', 'Delivered', '${o.phone}', '${o.name}')">Deliv</button>
+                    </td>
+                </tr>
             `;
-            tbody.appendChild(row);
         });
+
+        document.getElementById('kpi-container').innerHTML = `
+            <div class="kpi-card"><p>Total Orders</p><h3>${stats.total}</h3></div>
+            <div class="kpi-card"><p>Pending</p><h3>${stats.pending}</h3></div>
+            <div class="kpi-card"><p>Revenue</p><h3>₹${stats.revenue}</h3></div>
+            <div class="kpi-card"><p>Profit</p><h3>₹${stats.profit}</h3></div>
+        `;
     });
-};
 
-window.updateStatus = async (id, status, phone, name, prod, amt, pay) => {
-    await update(ref(db, `orders/${id}`), { status });
-    let msg = "";
-    if(status === 'Shipped') {
-        msg = `Dear ${name}, your order for ${prod} (₹${amt}) from Aarohi Collection has been shipped. Team Aarohi.`;
-    } else if(status === 'Delivered') {
-        msg = `Dear ${name}, your order from Aarohi Collection has been delivered. We hope you love it!`;
-    }
-    if(msg) window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-};
+    // Product Management
+    const prodFormCont = document.getElementById('product-form-container');
+    document.getElementById('open-add-prod').onclick = () => prodFormCont.classList.toggle('hidden');
 
-const loadProducts = () => {
+    document.getElementById('product-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const pData = {
+            name: document.getElementById('prod-name').value,
+            category: document.getElementById('prod-category').value,
+            price: Number(document.getElementById('prod-price').value),
+            costPrice: Number(document.getElementById('prod-cost').value),
+            stock: Number(document.getElementById('prod-stock').value),
+            imageURL: document.getElementById('prod-img').value,
+            active: document.getElementById('prod-active').checked,
+            createdAt: new Date().toISOString()
+        };
+        await push(ref(db, 'products'), pData);
+        alert('Product Added');
+        prodFormCont.classList.add('hidden');
+    };
+
     onValue(ref(db, 'products'), (snapshot) => {
+        const products = snapshot.val() || {};
         const tbody = document.getElementById('products-tbody');
         tbody.innerHTML = '';
-        const data = snapshot.val() || {};
-        Object.keys(data).forEach(id => {
-            const p = data[id];
+        Object.keys(products).forEach(id => {
+            const p = products[id];
             tbody.innerHTML += `
                 <tr>
                     <td><img src="${p.imageURL}" width="40"></td>
                     <td>${p.name}</td>
-                    <td>${p.category}</td>
-                    <td style="color:${p.stock < 5 ? 'red' : 'inherit'}">${p.stock}</td>
-                    <td>${formatPrice(p.price)}</td>
-                    <td>${p.active ? '✅' : '❌'}</td>
-                    <td><button onclick="deleteProduct('${id}')">Delete</button></td>
+                    <td style="${p.stock < 5 ? 'color:red; font-weight:bold;' : ''}">${p.stock}</td>
+                    <td>₹${p.price}</td>
+                    <td>${p.active ? 'Active' : 'Hidden'}</td>
+                    <td><button onclick="deleteProd('${id}')">Delete</button></td>
                 </tr>
             `;
         });
     });
+}
+
+// Global window functions for admin actions
+window.updateOrder = (id, status, phone, name) => {
+    update(ref(db, `orders/${id}`), { status }).then(() => {
+        const msg = status === 'Shipped' ? 
+            `Dear ${name}, your order from Aarohi Collection has been Shipped!` : 
+            `Dear ${name}, your order has been Delivered. We hope you love it!`;
+        window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`);
+    });
 };
 
-window.deleteProduct = (id) => { if(confirm('Delete?')) remove(ref(db, `products/${id}`)); };
-
-let revChart, statusChart;
-const renderCharts = (orders) => {
-    const ctx1 = document.getElementById('revenueChart');
-    const ctx2 = document.getElementById('statusChart');
-    if(!ctx1) return;
-
-    if(revChart) revChart.destroy();
-    if(statusChart) statusChart.destroy();
-
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-    revChart = new Chart(ctx1, {
-        type: 'bar',
-        data: { labels: months, datasets: [{ label: 'Revenue', data: [12000, 19000, 3000, 5000, 2000, 3000], backgroundColor: '#C6A75E' }] }
-    });
-
-    const statusData = [
-        orders.filter(o => o.status === 'Pending').length,
-        orders.filter(o => o.status === 'Shipped').length,
-        orders.filter(o => o.status === 'Delivered').length
-    ];
-
-    statusChart = new Chart(ctx2, {
-        type: 'doughnut',
-        data: {
-            labels: ['Pending', 'Shipped', 'Delivered'],
-            datasets: [{ data: statusData, backgroundColor: ['#E74C3C', '#C6A75E', '#27AE60'] }]
-        }
-    });
+window.deleteProd = (id) => {
+    if(confirm('Delete product?')) remove(ref(db, `products/${id}`));
 };
