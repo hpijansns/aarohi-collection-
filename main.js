@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, get, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, set, push, onValue, get, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBD-mzED_h1NEu4kyON4UTYn9RJ0pE7TWc",
@@ -13,33 +14,41 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+const auth = getAuth(app);
 
-// --- GLOBAL UTILITIES ---
-const formatCurrency = (val) => `₹${(Number(val) || 0).toLocaleString('en-IN')}`;
-const getCart = () => JSON.parse(localStorage.getItem('aarohi_cart')) || null;
-const saveCart = (item) => localStorage.setItem('aarohi_cart', JSON.stringify(item));
+// --- GLOBAL UTILS ---
+const formatINR = (num) => "₹" + (Number(num) || 0).toLocaleString('en-IN');
+const getBag = () => JSON.parse(localStorage.getItem('aarohi_bag')) || null;
+const saveBag = (item) => localStorage.setItem('aarohi_bag', JSON.stringify(item));
+const clearBag = () => localStorage.removeItem('aarohi_bag');
 
-// --- SHOP LOGIC ---
+const updateBadge = () => {
+    const badge = document.getElementById('cart-count');
+    if (badge) badge.innerText = getBag() ? "1" : "0";
+};
+
+// --- FRONTEND: SHOP LOGIC ---
 if (document.getElementById('product-grid')) {
-    const grid = document.getElementById('product-grid');
+    updateBadge();
     onValue(ref(db, 'products'), (snapshot) => {
-        grid.innerHTML = "";
+        const grid = document.getElementById('product-grid');
+        grid.innerHTML = '';
         const data = snapshot.val();
-        if (!data) return;
+        if (!data) return grid.innerHTML = "<p>No products available.</p>";
 
         Object.keys(data).forEach(id => {
             const p = data[id];
             if (p.active === "true" || p.active === true) {
-                const isOutOfStock = (Number(p.stock) || 0) <= 0;
+                const isOut = Number(p.stock) <= 0;
                 grid.innerHTML += `
-                    <div class="product-card" style="position:relative; border: 1px solid #eee; transition: 0.3s;">
-                        ${isOutOfStock ? `<span class="stock-badge out-of-stock">Out of Stock</span>` : p.stock < 5 ? `<span class="stock-badge low-stock">Only ${p.stock} Left</span>` : ''}
-                        <img src="${p.imageURL}" style="width:100%; height:350px; object-fit:cover; opacity: ${isOutOfStock ? '0.5' : '1'}">
-                        <div style="padding:15px; text-align:center;">
+                    <div class="p-card">
+                        ${isOut ? '<span class="badge">Out of Stock</span>' : ''}
+                        <img src="${p.imageURL}" class="p-img" alt="${p.name}">
+                        <div class="p-info">
                             <h3>${p.name}</h3>
-                            <p style="color:var(--gold); font-weight:bold; margin: 10px 0;">${formatCurrency(p.price)}</p>
-                            <button class="btn-premium" ${isOutOfStock ? 'disabled' : ''} onclick="buyNow('${id}', '${p.name}', ${p.price}, '${p.imageURL}', ${p.stock}, ${p.costPrice})">
-                                ${isOutOfStock ? 'Sold Out' : 'Buy Now'}
+                            <p class="p-price">${formatINR(p.price)}</p>
+                            <button class="btn-gold" ${isOut ? 'disabled' : ''} onclick="addToBag('${id}', '${p.name}', ${p.price}, '${p.imageURL}', ${p.stock}, ${p.costPrice})">
+                                ${isOut ? 'Sold Out' : 'Buy Now'}
                             </button>
                         </div>
                     </div>
@@ -49,109 +58,133 @@ if (document.getElementById('product-grid')) {
     });
 }
 
-window.buyNow = (id, name, price, img, stock, costPrice) => {
-    saveCart({ id, name, price, img, stock, costPrice, qty: 1 });
+window.addToBag = (id, name, price, img, stock, costPrice) => {
+    const bagItem = { id, name, price, img, stock, costPrice, qty: 1 };
+    saveBag(bagItem);
     window.location.href = "checkout.html";
 };
 
-// --- CHECKOUT LOGIC ---
-if (document.getElementById('order-form')) {
-    const cartContainer = document.getElementById('cart-items-container');
-    
+// --- FRONTEND: CHECKOUT LOGIC ---
+if (document.getElementById('cart-item-list')) {
     const renderCheckout = () => {
-        const item = getCart();
-        if (!item) { window.location.href = "index.html"; return; }
+        const item = getBag();
+        const container = document.getElementById('cart-item-list');
+        if (!item) {
+            window.location.href = "index.html";
+            return;
+        }
 
-        cartContainer.innerHTML = `
-            <div class="product-summary-row">
-                <img src="${item.img}" class="summary-img">
-                <div style="flex:1">
-                    <h4 class="luxury-text">${item.name}</h4>
-                    <p style="color:var(--gold); font-weight:600; margin-top:5px;">${formatCurrency(item.price)}</p>
-                    <div class="qty-box">
+        container.innerHTML = `
+            <div class="checkout-item">
+                <img src="${item.img}" class="checkout-item-img">
+                <div class="checkout-item-details">
+                    <h3>${item.name}</h3>
+                    <p style="color:var(--gold); font-weight:600;">${formatINR(item.price)}</p>
+                    <div class="qty-controls">
                         <button class="qty-btn" onclick="updateQty(-1)">-</button>
-                        <span style="font-weight:bold;">${item.qty}</span>
+                        <span style="font-weight:600;">${item.qty}</span>
                         <button class="qty-btn" onclick="updateQty(1)">+</button>
                     </div>
                 </div>
-                <button class="remove-btn" onclick="removeItem()"><i class="fa-solid fa-trash"></i></button>
+                <button class="remove-prod" onclick="removeItem()"><i class="fa-solid fa-trash"></i></button>
             </div>
         `;
-
-        const total = item.qty * item.price;
-        document.getElementById('subtotal').innerText = formatCurrency(total);
-        document.getElementById('grand-total').innerText = formatCurrency(total);
+        document.getElementById('grand-total').innerText = formatINR(item.qty * item.price);
     };
 
     window.updateQty = (change) => {
-        const item = getCart();
+        const item = getBag();
         const newQty = item.qty + change;
         if (newQty < 1) return;
-        if (newQty > item.stock) { alert("Maximum available stock reached"); return; }
+        if (newQty > item.stock) {
+            alert("Sorry, only " + item.stock + " pieces available.");
+            return;
+        }
         item.qty = newQty;
-        saveCart(item);
+        saveBag(item);
         renderCheckout();
     };
 
     window.removeItem = () => {
-        localStorage.removeItem('aarohi_cart');
+        clearBag();
         window.location.href = "index.html";
     };
 
     renderCheckout();
 
-    // --- PLACE ORDER LOGIC ---
     document.getElementById('order-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const item = getCart();
+        const item = getBag();
         const btn = document.getElementById('place-order-btn');
-        
         btn.disabled = true;
-        btn.innerText = "Processing Luxury Order...";
+        btn.innerText = "Processing Order...";
 
-        const orderId = "AR" + Date.now().toString().slice(-6).toUpperCase();
+        const orderId = "AR" + Math.floor(1000 + Math.random() * 9000);
+        const name = document.getElementById('cust-name').value;
+        const phone = document.getElementById('cust-phone').value;
+        const address = document.getElementById('cust-address').value;
+        const method = document.getElementById('payment-method').value;
+
         const orderData = {
-            orderId,
-            name: document.getElementById('cust-name').value,
-            phone: document.getElementById('cust-phone').value,
-            address: document.getElementById('cust-address').value,
-            paymentMethod: document.getElementById('payment-method').value,
+            orderId, name, phone, address,
             productName: item.name,
             productId: item.id,
             qty: item.qty,
             amount: item.qty * item.price,
             costPrice: item.costPrice || 0,
+            paymentMethod: method,
             status: "Pending",
-            timestamp: new Date().toLocaleString('en-IN', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' })
+            timestamp: new Date().toISOString()
         };
 
         try {
-            // 1. Save Order to Database
             await push(ref(db, 'orders'), orderData);
+            
+            // Reduce stock
+            const pRef = ref(db, `products/${item.id}`);
+            const pSnap = await get(pRef);
+            if(pSnap.exists()){
+                const currentStock = Number(pSnap.val().stock) || 0;
+                await update(pRef, { stock: Math.max(0, currentStock - item.qty) });
+            }
 
-            // 2. Reduce Stock in Database
-            const productRef = ref(db, `products/${item.id}`);
-            const currentStock = (Number(item.stock) || 0) - item.qty;
-            await update(productRef, { stock: Math.max(0, currentStock) });
-
-            // 3. Telegram Notification
+            // Telegram
             const BOT_TOKEN = "8332178525:AAHzyIN9oTEeHGLIruz1zaUvTBnyTfcBmNg";
             const CHAT_ID = "-1003759800000";
-            const message = `🛍️ *New Order - Aarohi Collection*%0A%0A🆔 *Order ID:* ${orderId}%0A👤 *Name:* ${orderData.name}%0A📞 *Phone:* ${orderData.phone}%0A📍 *Address:* ${orderData.address}%0A👗 *Product:* ${orderData.productName}%0A🔢 *Qty:* ${orderData.qty}%0A💰 *Amount:* ₹${orderData.amount}%0A💳 *Payment:* ${orderData.paymentMethod}%0A📦 *Status:* Pending%0A🕒 *Date:* ${orderData.timestamp}`;
-            
+            const message = encodeURIComponent(`🛍️ *New Order - Aarohi Collection*\n\n🆔 *Order ID:* ${orderId}\n👤 *Name:* ${name}\n📞 *Phone:* ${phone}\n📍 *Address:* ${address}\n👗 *Product:* ${item.name} (x${item.qty})\n💰 *Amount:* ₹${orderData.amount}\n💳 *Payment:* ${method}\n📦 *Status:* Pending`);
             await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${message}&parse_mode=Markdown`);
 
-            // 4. Success UX
-            localStorage.removeItem('aarohi_cart');
+            clearBag();
             document.getElementById('display-order-id').innerText = orderId;
-            document.getElementById('success-overlay').style.display = 'flex';
-            window.scrollTo(0,0);
-
+            document.getElementById('success-overlay').classList.remove('hidden');
         } catch (error) {
-            console.error(error);
-            alert("Connection error. Please try again.");
+            alert("Error: " + error.message);
             btn.disabled = false;
-            btn.innerText = "Place Order";
         }
     });
 }
+
+// --- ADMIN: LOGIN ---
+if (document.getElementById('login-form')) {
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const em = document.getElementById('admin-email').value;
+        const ps = document.getElementById('admin-pass').value;
+        signInWithEmailAndPassword(auth, em, ps)
+            .then(() => window.location.href = "admin.html")
+            .catch(() => document.getElementById('login-error').innerText = "Access Denied.");
+    });
+}
+
+// --- ADMIN: LOGIC ---
+if (window.location.pathname.includes('admin.html')) {
+    onAuthStateChanged(auth, (user) => {
+        if (!user || user.email !== 'mohitrajpura9@gmail.com') window.location.href = 'login.html';
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+
+    // KPI and Orders Table
+    onValue(ref(db, 'orders'), (snapshot) => {
+        const data = snapshot.val() || {};
+        const kpis = { total: 0, pending: 0, revenue
