@@ -2,99 +2,81 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Dashboard | Aarohi Collection</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Console | Aarohi Collection</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body>
-    <div class="admin-layout" id="admin-body" style="display: none;">
+<body class="admin-page">
+    <div class="admin-wrapper">
         <aside class="sidebar">
-            <h2>AAROHI</h2>
-            <div class="nav-item active" onclick="switchTab('dash')">📊 Dashboard</div>
-            <div class="nav-item" onclick="switchTab('orders')">📦 Orders</div>
-            <div class="nav-item" onclick="switchTab('inventory')">👗 Inventory</div>
-            <div class="nav-item" id="logout-btn" style="margin-top: 40px; color: #ff7675;">🚪 Logout</div>
+            <div class="logo">Aarohi<span>Admin</span></div>
+            <nav>
+                <a href="#" onclick="showAdminSection('dash')"><i class="fa fa-chart-line"></i> Dashboard</a>
+                <a href="#" onclick="showAdminSection('orders')"><i class="fa fa-shopping-bag"></i> Orders</a>
+                <a href="#" onclick="showAdminSection('products')"><i class="fa fa-box"></i> Inventory</a>
+                <a href="#" onclick="showAdminSection('coupons')"><i class="fa fa-ticket"></i> Coupons</a>
+            </nav>
+            <button id="logout-btn" class="logout-link">Logout</button>
         </aside>
 
-        <main class="admin-main">
-            <!-- Dashboard Section -->
-            <section id="sec-dash">
-                <div class="stats-grid">
-                    <div class="stat-card" onclick="setOrderFilter('Pending')">
-                        <h4>Pending Orders</h4>
-                        <p id="stat-pending">0</p>
-                    </div>
-                    <div class="stat-card">
-                        <h4>Total Revenue</h4>
-                        <p id="stat-rev">₹0</p>
-                    </div>
-                    <div class="stat-card">
-                        <h4>Total Profit</h4>
-                        <p id="stat-profit">₹0</p>
-                    </div>
-                    <div class="stat-card">
-                        <h4>Total Customers</h4>
-                        <p id="stat-cust">0</p>
-                    </div>
+        <main class="admin-content">
+            <div id="dash-section" class="admin-section">
+                <div id="bi-alerts"></div>
+                <div class="kpi-grid" id="kpi-cards"></div>
+                <div class="chart-grid">
+                    <canvas id="revenueChart"></canvas>
+                    <canvas id="statusChart"></canvas>
+                    <canvas id="paymentChart"></canvas>
                 </div>
-            </section>
+            </div>
 
-            <!-- Orders Section -->
-            <section id="sec-orders" style="display: none;">
-                <h3 style="margin-bottom: 20px;">Order Management</h3>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Order ID</th>
-                                <th>Customer</th>
-                                <th>Phone</th>
-                                <th>Product</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-orders-table"></tbody>
-                    </table>
+            <div id="orders-section" class="admin-section hidden">
+                <h2>Order Management</h2>
+                <div class="table-filters">
+                    <input type="text" id="order-search" placeholder="Search Phone/ID">
+                    <select id="status-filter">
+                        <option value="All">All Status</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Shipped">Shipped</option>
+                    </select>
                 </div>
-            </section>
+                <table id="orders-table">
+                    <thead>
+                        <tr><th>ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th><th>Aging</th><th>Action</th></tr>
+                    </thead>
+                    <tbody id="orders-tbody"></tbody>
+                </table>
+            </div>
 
-            <!-- Inventory Section -->
-            <section id="sec-inventory" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h3>Inventory Management</h3>
-                    <button class="btn btn-gold" onclick="document.getElementById('product-form').style.display='block'">+ Add Product</button>
+            <div id="products-section" class="admin-section hidden">
+                <div class="flex-between">
+                    <h2>Product Management</h2>
+                    <button class="btn-gold" id="add-prod-btn">Add New Product</button>
                 </div>
+                <div id="prod-form-container" class="hidden">
+                    <!-- Form injected by JS -->
+                </div>
+                <table id="products-table">
+                    <thead>
+                        <tr><th>Img</th><th>Name</th><th>Category</th><th>Stock</th><th>Price</th><th>Active</th><th>Action</th></tr>
+                    </thead>
+                    <tbody id="products-tbody"></tbody>
+                </table>
+            </div>
 
-                <div id="product-form" style="display: none; background: white; padding: 25px; border-radius: 8px; margin-bottom: 30px;">
-                    <input type="hidden" id="p-id">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <input type="text" id="p-name" placeholder="Name">
-                        <input type="number" id="p-price" placeholder="Selling Price">
-                        <input type="number" id="p-cost" placeholder="Cost Price">
-                        <input type="number" id="p-stock" placeholder="Stock">
-                        <input type="text" id="p-img" placeholder="Image URL">
-                    </div>
-                    <button class="btn btn-gold" style="margin-top: 15px;" id="save-product-btn">Save Product</button>
-                </div>
-
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Image</th>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Stock</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-product-table"></tbody>
-                    </table>
-                </div>
-            </section>
+            <div id="coupons-section" class="admin-section hidden">
+                <h2>Coupon System</h2>
+                <div id="coupon-form"></div>
+                <div id="coupon-list"></div>
+            </div>
         </main>
     </div>
-    <script src="main.js" type="module"></script>
+
+    <script type="module">
+        import { initAdmin } from './main.js';
+        window.addEventListener('DOMContentLoaded', initAdmin);
+    </script>
 </body>
 </html>
