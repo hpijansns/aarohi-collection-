@@ -6,36 +6,41 @@
     <title>Checkout | Aarohi Collection</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body style="background: #fdfdfd;">
+<body style="background: var(--light);">
     <nav>
-        <div class="container"><a href="index.html" class="logo">AAROHI<span> COLLECTION</span></a></div>
+        <div class="container"><a href="index.html" class="logo">AAROHI<span>COLLECTION</span></a></div>
     </nav>
 
-    <div class="container" style="max-width: 800px; margin-top: 50px;">
-        <div id="cart-summary" class="kpi-card" style="margin-bottom: 30px; border-left: none; border-bottom: 4px solid var(--gold);">
-            <h3>Your Bag</h3>
-            <div id="cart-items"></div>
-            <div class="flex" style="margin-top: 20px; font-weight: bold; font-size: 1.2rem;">
-                <span>Total Amount:</span>
-                <span id="total-price">₹0</span>
+    <div class="container" style="max-width: 900px; padding: 40px 20px;">
+        <div style="display: grid; grid-template-columns: 1fr 350px; gap: 30px;">
+            <div class="modal">
+                <h3>Delivery Details</h3>
+                <form id="checkout-form">
+                    <input type="text" id="cust-name" placeholder="Full Name" required>
+                    <input type="tel" id="cust-phone" placeholder="Phone Number" required>
+                    <textarea id="cust-address" placeholder="Full Address (House No, Street, City, ZIP)" rows="4" required></textarea>
+                    <h3>Payment Method</h3>
+                    <select id="payment-method">
+                        <option value="COD">Cash on Delivery</option>
+                        <option value="UPI">UPI / QR Code</option>
+                        <option value="Prepaid">Prepaid Card</option>
+                    </select>
+                    <button type="submit" class="btn-gold" style="width: 100%;">Place Luxury Order</button>
+                </form>
+            </div>
+
+            <div class="modal" id="order-summary-box">
+                <h3>Order Summary</h3>
+                <div id="checkout-item-details" style="margin-top: 20px;">
+                    <!-- Injected by main.js -->
+                </div>
+                <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+                <div class="flex-between">
+                    <strong>Total Amount:</strong>
+                    <strong id="final-total" style="color: var(--gold); font-size: 20px;">₹0</strong>
+                </div>
             </div>
         </div>
-
-        <form id="checkout-form" class="kpi-card" style="border-left: none;">
-            <h3>Shipping Details</h3>
-            <input type="text" id="cust-name" placeholder="Full Name" required>
-            <input type="tel" id="cust-phone" placeholder="Phone Number" required>
-            <textarea id="cust-address" rows="4" placeholder="Complete Address" required></textarea>
-            
-            <h3>Payment Method</h3>
-            <select id="payment-method" required>
-                <option value="COD">Cash on Delivery</option>
-                <option value="UPI">UPI Payment</option>
-                <option value="Prepaid">Prepaid Card</option>
-            </select>
-            
-            <button type="submit" class="btn-gold" style="width: 100%; margin-top: 20px;">Place Luxury Order</button>
-        </form>
     </div>
 
     <script type="module" src="main.js"></script>
