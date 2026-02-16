@@ -2,122 +2,95 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | Aarohi Collection</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body>
-    <div class="admin-container">
-        <aside class="sidebar">
-            <h2 class="logo" style="color: white; margin-bottom: 40px;">AAROHI<span>ADMIN</span></h2>
-            <nav>
-                <a href="#" class="sidebar-link active" onclick="switchSection('dashboard')">
-                    <i class="fa-solid fa-chart-pie" style="width: 25px;"></i> Dashboard
-                </a>
-                <a href="#" class="sidebar-link" onclick="switchSection('orders')">
-                    <i class="fa-solid fa-shopping-bag" style="width: 25px;"></i> Orders
-                </a>
-                <a href="#" class="sidebar-link" onclick="switchSection('products')">
-                    <i class="fa-solid fa-box" style="width: 25px;"></i> Inventory
-                </a>
-                <a href="#" id="logout-btn" class="sidebar-link" style="margin-top: 40px; color: #E74C3C;">
-                    <i class="fa-solid fa-right-from-bracket" style="width: 25px;"></i> Logout
-                </a>
-            </nav>
-        </aside>
+<body class="admin-body">
+    <aside class="sidebar">
+        <div class="logo">Aarohi<span>Admin</span></div>
+        <nav>
+            <a href="#" onclick="showSection('dash')"><i class="fa fa-chart-line"></i> Dashboard</a>
+            <a href="#" onclick="showSection('orders')"><i class="fa fa-shopping-bag"></i> Orders</a>
+            <a href="#" onclick="showSection('inventory')"><i class="fa fa-box"></i> Inventory</a>
+            <button id="logout-btn" class="logout-link"><i class="fa fa-sign-out"></i> Logout</button>
+        </nav>
+    </aside>
 
-        <main class="admin-main">
-            <!-- Dashboard Section -->
-            <section id="section-dashboard">
-                <h2 style="margin-bottom: 30px;">Overview</h2>
-                <div class="kpi-grid" id="kpi-container">
-                    <!-- KPI Cards via JS -->
-                </div>
-            </section>
+    <main class="admin-content">
+        <section id="dash-section" class="admin-section">
+            <h2 class="section-title">Business Overview</h2>
+            <div class="kpi-grid" id="kpi-cards">
+                <!-- Injected via JS -->
+            </div>
+        </section>
 
-            <!-- Orders Section -->
-            <section id="section-orders" class="hidden">
-                <h2 style="margin-bottom: 30px;">Order Management</h2>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Order ID</th>
-                                <th>Customer</th>
-                                <th>Amount</th>
-                                <th>Payment</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="orders-table-body"></tbody>
-                    </table>
+        <section id="orders-section" class="admin-section hidden">
+            <div class="section-header">
+                <h2>Manage Orders</h2>
+                <div class="table-filters">
+                    <input type="text" id="order-search" placeholder="Search phone/ID">
                 </div>
-            </section>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th><th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-tbody"></tbody>
+                </table>
+            </div>
+        </section>
 
-            <!-- Inventory Section -->
-            <section id="section-products" class="hidden">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                    <h2>Product Inventory</h2>
-                    <button class="btn-gold" onclick="openProductModal()">+ Add Product</button>
-                </div>
+        <section id="inventory-section" class="admin-section hidden">
+            <div class="section-header">
+                <h2>Product Inventory</h2>
+                <button class="btn-gold" id="add-prod-btn">Add Product</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Image</th><th>Name</th><th>Stock</th><th>Price</th><th>Active</th><th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-tbody"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
 
-                <div id="product-modal" class="hidden" style="background: white; padding: 25px; border-radius: 8px; margin-bottom: 30px; border: 1px solid var(--border);">
-                    <h3 id="modal-title" style="margin-bottom: 20px;">Add New Product</h3>
-                    <form id="product-form" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <input type="hidden" id="edit-id">
-                        <div class="form-group"><label>Product Name</label><input type="text" id="p-name" class="form-control" required></div>
-                        <div class="form-group"><label>Category</label><input type="text" id="p-category" class="form-control" required></div>
-                        <div class="form-group"><label>Price (₹)</label><input type="number" id="p-price" class="form-control" required></div>
-                        <div class="form-group"><label>Cost Price (₹)</label><input type="number" id="p-cost" class="form-control" required></div>
-                        <div class="form-group"><label>Stock Quantity</label><input type="number" id="p-stock" class="form-control" required></div>
-                        <div class="form-group"><label>Image URL</label><input type="text" id="p-image" class="form-control" required></div>
-                        <div class="form-group"><label>Status</label>
-                            <select id="p-active" class="form-control"><option value="true">Active</option><option value="false">Inactive</option></select>
-                        </div>
-                        <div style="grid-column: span 2; display: flex; gap: 10px;">
-                            <button type="submit" class="btn-gold">Save Product</button>
-                            <button type="button" class="btn-gold btn-gold-outline" onclick="closeProductModal()">Cancel</button>
-                        </div>
-                    </form>
+    <!-- Product Modal (Hidden) -->
+    <div id="product-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 id="modal-title">Product Form</h3>
+            <form id="product-form">
+                <input type="hidden" id="edit-id">
+                <input type="text" id="p-name" placeholder="Product Name" required>
+                <input type="number" id="p-price" placeholder="Selling Price" required>
+                <input type="number" id="p-cost" placeholder="Cost Price" required>
+                <input type="number" id="p-stock" placeholder="Stock Quantity" required>
+                <input type="text" id="p-img" placeholder="Image URL" required>
+                <select id="p-active">
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                </select>
+                <div class="modal-btns">
+                    <button type="submit" class="btn-gold">Save Product</button>
+                    <button type="button" class="btn-close" onclick="closeModal()">Close</button>
                 </div>
-
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Image</th>
-                                <th>Name</th>
-                                <th>Stock</th>
-                                <th>Price</th>
-                                <th>Active</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="products-table-body"></tbody>
-                    </table>
-                </div>
-            </section>
-        </main>
+            </form>
+        </div>
     </div>
 
     <script type="module" src="main.js"></script>
     <script>
-        window.switchSection = (id) => {
-            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-            document.getElementById('section-' + id).classList.remove('hidden');
-            event.currentTarget.classList.add('active');
-        };
-        window.openProductModal = () => {
-            document.getElementById('product-modal').classList.remove('hidden');
-            document.getElementById('modal-title').innerText = "Add New Product";
-            document.getElementById('product-form').reset();
-            document.getElementById('edit-id').value = "";
-        };
-        window.closeProductModal = () => {
-            document.getElementById('product-modal').classList.add('hidden');
+        window.showSection = (id) => {
+            document.querySelectorAll('.admin-section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(id + '-section').classList.remove('hidden');
         };
     </script>
 </body>
