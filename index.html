@@ -5,16 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aarohi Collection | Luxury Women's Fashion</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="shop-page">
+<body>
     <nav class="navbar">
-        <div class="container nav-flex">
-            <div class="logo">Aarohi<span>Collection</span></div>
-            <div class="nav-links">
-                <a href="#shop">Collection</a>
-                <a href="checkout.html" class="cart-btn">
+        <div class="container flex-between">
+            <a href="index.html" class="logo">AAROHI<span>COLLECTION</span></a>
+            <div class="nav-icons">
+                <a href="checkout.html" class="cart-link">
                     <i class="fa-solid fa-bag-shopping"></i>
                     <span id="cart-count">0</span>
                 </a>
@@ -24,57 +23,26 @@
 
     <header class="hero">
         <div class="hero-content">
-            <h1>Elegance Redefined.</h1>
-            <p>Premium Luxury Wear for the Modern Woman</p>
-            <a href="#shop" class="btn-gold">Explore Collection</a>
+            <h1>Timeless Elegance</h1>
+            <p>Exquisite fashion for the modern woman.</p>
+            <a href="#shop" class="btn-gold">Shop Collection</a>
         </div>
     </header>
 
-    <section class="categories container">
-        <div class="section-title"><h2>Shop by Category</h2></div>
-        <div class="cat-grid">
-            <div class="cat-item" onclick="filterShop('Saree')">Sarees</div>
-            <div class="cat-item" onclick="filterShop('Suits')">Suits</div>
-            <div class="cat-item" onclick="filterShop('Lehenga')">Lehengas</div>
-            <div class="cat-item" onclick="filterShop('Kurti')">Kurtis</div>
-        </div>
-    </section>
-
-    <section id="shop" class="products container">
-        <div class="section-title"><h2>Featured Collection</h2></div>
+    <main class="container" id="shop">
+        <h2 class="section-title">New Arrivals</h2>
         <div id="product-grid" class="product-grid">
-            <!-- Products injected by JS -->
+            <!-- Loaded by JS -->
             <div class="loader">Loading luxury pieces...</div>
         </div>
-    </section>
-
-    <section class="trust-badges container">
-        <div class="badge-item"><i class="fa-solid fa-shield-halved"></i> 100% Secure</div>
-        <div class="badge-item"><i class="fa-solid fa-truck-fast"></i> Premium Shipping</div>
-        <div class="badge-item"><i class="fa-solid fa-gem"></i> Artisan Quality</div>
-    </section>
+    </main>
 
     <footer class="footer">
-        <div class="container footer-grid">
-            <div>
-                <h3>Aarohi Collection</h3>
-                <p>Curating the finest women's fashion.</p>
-            </div>
-            <div>
-                <h4>Policy</h4>
-                <a href="#">Shipping</a><br><a href="#">Returns</a>
-            </div>
+        <div class="container">
+            <p>&copy; 2024 Aarohi Collection. Premium Ethnic & Western Wear.</p>
         </div>
-        <div class="footer-bottom">© 2026 Aarohi Collection. All rights reserved.</div>
     </footer>
 
-    <a href="https://wa.me/918332178525" class="wa-float" target="_blank">
-        <i class="fab fa-whatsapp"></i>
-    </a>
-
-    <script type="module">
-        import { initShop } from './main.js';
-        window.addEventListener('DOMContentLoaded', initShop);
-    </script>
+    <script type="module" src="main.js"></script>
 </body>
 </html>
