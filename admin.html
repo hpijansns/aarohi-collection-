@@ -2,36 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard | Aarohi Collection</title>
+    <title>Admin Console | Aarohi Collection</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="admin-container">
+    <div class="admin-wrap">
         <aside class="sidebar">
-            <h2>Aarohi</h2>
+            <h2 class="logo">AAROHI<span>ADMIN</span></h2>
             <nav>
-                <a onclick="showPanel('dash')"><i class="fa fa-chart-line"></i> Dashboard</a>
+                <a onclick="showPanel('dashboard')"><i class="fa fa-chart-line"></i> Dashboard</a>
                 <a onclick="showPanel('orders')"><i class="fa fa-shopping-bag"></i> Orders</a>
-                <a onclick="showPanel('products')"><i class="fa fa-box"></i> Products</a>
-                <a id="logout-btn" style="color: var(--red); border: none;"><i class="fa fa-sign-out"></i> Logout</a>
+                <a onclick="showPanel('inventory')"><i class="fa fa-box"></i> Inventory</a>
+                <a id="logout-btn" style="color: var(--red); margin-top: 50px;"><i class="fa fa-sign-out"></i> Logout</a>
             </nav>
         </aside>
 
-        <main class="admin-content">
-            <!-- Dashboard -->
-            <div id="panel-dash" class="panel">
-                <h2 style="margin-bottom: 30px;">Business Overview</h2>
+        <main class="main-content">
+            <!-- Dashboard Panel -->
+            <section id="panel-dashboard">
+                <h2 style="margin-bottom: 30px;">Business Analytics</h2>
                 <div class="kpi-grid" id="kpi-container">
-                    <!-- KPIs injected here -->
+                    <!-- Loaded by JS -->
                 </div>
-            </div>
+            </section>
 
-            <!-- Orders -->
-            <div id="panel-orders" class="panel hidden">
-                <div class="flex">
-                    <h2>Orders</h2>
-                    <input type="text" id="order-search" placeholder="Search phone..." style="width: 250px;">
+            <!-- Orders Panel -->
+            <section id="panel-orders" class="hidden">
+                <div class="flex-between" style="margin-bottom: 20px;">
+                    <h2>Recent Orders</h2>
+                    <input type="text" id="order-search" placeholder="Search by name or phone..." style="width: 300px; margin-bottom: 0;">
                 </div>
                 <table>
                     <thead>
@@ -39,55 +39,67 @@
                             <th>Order ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th><th>Date</th><th>Action</th>
                         </tr>
                     </thead>
-                    <tbody id="orders-table-body"></tbody>
+                    <tbody id="orders-tbody"></tbody>
                 </table>
-            </div>
+            </section>
 
-            <!-- Products -->
-            <div id="panel-products" class="panel hidden">
-                <div class="flex">
-                    <h2>Inventory</h2>
-                    <button class="btn-gold" onclick="toggleProductForm()">+ New Product</button>
+            <!-- Inventory Panel -->
+            <section id="panel-inventory" class="hidden">
+                <div class="flex-between" style="margin-bottom: 20px;">
+                    <h2>Product Management</h2>
+                    <button class="btn-gold" onclick="toggleProductForm()">+ Add New Product</button>
                 </div>
-                
-                <div id="product-form-div" class="hidden kpi-card" style="margin-top: 20px;">
+
+                <div id="product-form-container" class="modal hidden">
+                    <h3 id="form-title">Add Luxury Product</h3>
                     <form id="product-form">
-                        <div class="grid" style="grid-template-columns: 1fr 1fr;">
+                        <input type="hidden" id="edit-id">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                             <input type="text" id="p-name" placeholder="Product Name" required>
-                            <input type="number" id="p-price" placeholder="Selling Price" required>
-                            <input type="number" id="p-cost" placeholder="Cost Price" required>
+                            <input type="text" id="p-cat" placeholder="Category" required>
+                            <input type="number" id="p-price" placeholder="Selling Price (₹)" required>
+                            <input type="number" id="p-cost" placeholder="Cost Price (₹)" required>
                             <input type="number" id="p-stock" placeholder="Stock Quantity" required>
                             <input type="text" id="p-img" placeholder="Image URL" required>
                             <select id="p-active">
-                                <option value="true">Active</option>
-                                <option value="false">Inactive</option>
+                                <option value="true">Live / Active</option>
+                                <option value="false">Hidden / Inactive</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn-gold">Save Product</button>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="submit" class="btn-gold">Save Product</button>
+                            <button type="button" class="btn-gold" style="background: #666;" onclick="toggleProductForm()">Cancel</button>
+                        </div>
                     </form>
                 </div>
 
-                <table style="margin-top: 30px;">
+                <table>
                     <thead>
                         <tr>
-                            <th>Image</th><th>Name</th><th>Stock</th><th>Price</th><th>Status</th><th>Actions</th>
+                            <th>Img</th><th>Product Name</th><th>Stock</th><th>Price</th><th>Status</th><th>Action</th>
                         </tr>
                     </thead>
-                    <tbody id="products-table-body"></tbody>
+                    <tbody id="inventory-tbody"></tbody>
                 </table>
-            </div>
+            </section>
         </main>
     </div>
 
     <script type="module" src="main.js"></script>
     <script>
-        // Tab switcher helper
+        // Tab system global helper
         window.showPanel = (id) => {
-            document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
             document.getElementById('panel-' + id).classList.remove('hidden');
         };
         window.toggleProductForm = () => {
-            document.getElementById('product-form-div').classList.toggle('hidden');
+            const container = document.getElementById('product-form-container');
+            container.classList.toggle('hidden');
+            if(container.classList.contains('hidden')) {
+                document.getElementById('product-form').reset();
+                document.getElementById('edit-id').value = "";
+                document.getElementById('form-title').innerText = "Add Luxury Product";
+            }
         };
     </script>
 </body>
