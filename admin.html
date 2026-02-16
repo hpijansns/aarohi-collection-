@@ -2,81 +2,78 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Console | Aarohi Collection</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="admin-page">
-    <div class="admin-wrapper">
-        <aside class="sidebar">
-            <div class="logo">Aarohi<span>Admin</span></div>
-            <nav>
-                <a href="#" onclick="showAdminSection('dash')"><i class="fa fa-chart-line"></i> Dashboard</a>
-                <a href="#" onclick="showAdminSection('orders')"><i class="fa fa-shopping-bag"></i> Orders</a>
-                <a href="#" onclick="showAdminSection('products')"><i class="fa fa-box"></i> Inventory</a>
-                <a href="#" onclick="showAdminSection('coupons')"><i class="fa fa-ticket"></i> Coupons</a>
-            </nav>
-            <button id="logout-btn" class="logout-link">Logout</button>
-        </aside>
+<body class="admin-body">
+    <aside class="sidebar">
+        <div class="logo">AAROHI<span>ADMIN</span></div>
+        <nav>
+            <button onclick="showPanel('dash')"><i class="fa fa-chart-line"></i> Dashboard</button>
+            <button onclick="showPanel('orders')"><i class="fa fa-shopping-bag"></i> Orders</button>
+            <button onclick="showPanel('products')"><i class="fa fa-box"></i> Products</button>
+            <button id="logout-btn"><i class="fa fa-sign-out"></i> Logout</button>
+        </nav>
+    </aside>
 
-        <main class="admin-content">
-            <div id="dash-section" class="admin-section">
-                <div id="bi-alerts"></div>
-                <div class="kpi-grid" id="kpi-cards"></div>
-                <div class="chart-grid">
-                    <canvas id="revenueChart"></canvas>
-                    <canvas id="statusChart"></canvas>
-                    <canvas id="paymentChart"></canvas>
-                </div>
-            </div>
+    <main class="admin-main">
+        <!-- Dashboard Section -->
+        <section id="panel-dash" class="panel">
+            <h2>Business Intelligence</h2>
+            <div class="kpi-grid" id="kpi-container"></div>
+        </section>
 
-            <div id="orders-section" class="admin-section hidden">
-                <h2>Order Management</h2>
-                <div class="table-filters">
-                    <input type="text" id="order-search" placeholder="Search Phone/ID">
-                    <select id="status-filter">
-                        <option value="All">All Status</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Shipped">Shipped</option>
-                    </select>
-                </div>
+        <!-- Orders Section -->
+        <section id="panel-orders" class="panel hidden">
+            <h2>Manage Orders</h2>
+            <div class="table-scroll">
                 <table id="orders-table">
                     <thead>
-                        <tr><th>ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th><th>Aging</th><th>Action</th></tr>
+                        <tr>
+                            <th>ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th><th>Aging</th><th>Actions</th>
+                        </tr>
                     </thead>
                     <tbody id="orders-tbody"></tbody>
                 </table>
             </div>
+        </section>
 
-            <div id="products-section" class="admin-section hidden">
-                <div class="flex-between">
-                    <h2>Product Management</h2>
-                    <button class="btn-gold" id="add-prod-btn">Add New Product</button>
-                </div>
-                <div id="prod-form-container" class="hidden">
-                    <!-- Form injected by JS -->
-                </div>
-                <table id="products-table">
-                    <thead>
-                        <tr><th>Img</th><th>Name</th><th>Category</th><th>Stock</th><th>Price</th><th>Active</th><th>Action</th></tr>
-                    </thead>
-                    <tbody id="products-tbody"></tbody>
-                </table>
+        <!-- Product Section -->
+        <section id="panel-products" class="panel hidden">
+            <div class="flex-between">
+                <h2>Inventory</h2>
+                <button class="btn-gold" id="open-add-prod">Add Product</button>
             </div>
-
-            <div id="coupons-section" class="admin-section hidden">
-                <h2>Coupon System</h2>
-                <div id="coupon-form"></div>
-                <div id="coupon-list"></div>
+            <div id="product-form-container" class="hidden card">
+                <form id="product-form">
+                    <input type="hidden" id="prod-id">
+                    <input type="text" id="prod-name" placeholder="Name" required>
+                    <input type="text" id="prod-category" placeholder="Category" required>
+                    <input type="number" id="prod-price" placeholder="Selling Price" required>
+                    <input type="number" id="prod-cost" placeholder="Cost Price" required>
+                    <input type="number" id="prod-stock" placeholder="Stock" required>
+                    <input type="text" id="prod-img" placeholder="Image URL" required>
+                    <label><input type="checkbox" id="prod-active" checked> Active</label>
+                    <button type="submit" class="btn-gold">Save Product</button>
+                </form>
             </div>
-        </main>
-    </div>
+            <table id="products-table">
+                <thead>
+                    <tr><th>Image</th><th>Name</th><th>Stock</th><th>Price</th><th>Status</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="products-tbody"></tbody>
+            </table>
+        </section>
+    </main>
 
-    <script type="module">
-        import { initAdmin } from './main.js';
-        window.addEventListener('DOMContentLoaded', initAdmin);
+    <script type="module" src="main.js"></script>
+    <script>
+        // Global helper for panel switching
+        window.showPanel = (panelId) => {
+            document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById('panel-' + panelId).classList.remove('hidden');
+        }
     </script>
 </body>
 </html>
