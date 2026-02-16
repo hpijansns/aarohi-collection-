@@ -2,47 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout | Aarohi Collection</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <nav><a href="index.html" class="logo">AAROHI <span>COLLECTION</span></a></nav>
-
-    <div class="container" style="max-width: 900px;">
-        <div style="display: grid; grid-template-columns: 1fr 350px; gap: 40px;">
-            <div>
-                <h3>Shipping Information</h3>
-                <form id="order-form">
-                    <input type="text" id="order-name" placeholder="Full Name" required>
-                    <input type="tel" id="order-phone" placeholder="Phone Number (10 digits)" pattern="[0-9]{10}" required>
-                    <textarea id="order-address" placeholder="Complete Address" rows="4" required></textarea>
-                    
-                    <h3 style="margin-top: 20px;">Payment Method</h3>
-                    <select id="order-payment">
-                        <option value="COD">Cash on Delivery</option>
-                        <option value="UPI">UPI Payment</option>
-                        <option value="Prepaid">Prepaid / Card</option>
-                    </select>
-                    <button type="submit" class="btn btn-gold" style="width: 100%; margin-top: 20px;">Place Order Now</button>
-                </form>
-            </div>
-
-            <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: var(--shadow); height: fit-content;">
-                <h3>Your Order</h3>
-                <div id="checkout-item" style="margin: 20px 0;"></div>
-                <hr>
-                <div style="margin: 15px 0;">
-                    <input type="text" id="coupon-input" placeholder="Coupon Code" style="width: 70%; margin: 0;">
-                    <button class="btn btn-dark" onclick="applyCoupon()" style="width: 25%; padding: 10px;">Apply</button>
-                    <p id="coupon-status" style="font-size: 12px; margin-top: 5px;"></p>
-                </div>
-                <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem;">
-                    <span>Total:</span>
-                    <span id="checkout-total">₹0</span>
-                </div>
-            </div>
-        </div>
+    <div class="main-content" style="margin-left:0; max-width: 800px; margin: 40px auto; background:white; padding: 30px; border-radius:12px; box-shadow:var(--shadow);">
+        <h2>Complete Your Order</h2>
+        <div id="checkout-summary" style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 8px;"></div>
+        <form id="place-order-form">
+            <input type="text" id="cust-name" placeholder="Full Name" required>
+            <input type="tel" id="cust-phone" placeholder="WhatsApp Number" required>
+            <textarea id="cust-address" placeholder="Shipping Address" rows="4" required style="width: 100%; padding:10px; border:1px solid #ddd; border-radius:6px; margin-bottom:10px;"></textarea>
+            <select id="cust-pay" style="width:100%; margin-bottom:20px;">
+                <option value="COD">Cash on Delivery</option>
+                <option value="UPI">UPI Payment</option>
+                <option value="Prepaid">Prepaid (Card/Netbanking)</option>
+            </select>
+            <button type="submit" class="btn btn-gold" style="width:100%; font-size:16px;">Place Order</button>
+        </form>
     </div>
     <script src="main.js" type="module"></script>
 </body>
