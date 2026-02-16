@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard | Aarohi Collection</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="admin-wrapper" id="admin-body" style="display: none;">
+        <aside class="sidebar">
+            <h2>AAROHI</h2>
+            <div class="menu-item active" onclick="showSec('dash')">📊 Dashboard</div>
+            <div class="menu-item" onclick="showSec('orders')">📦 Orders</div>
+            <div class="menu-item" onclick="showSec('products')">👗 Products</div>
+            <div class="menu-item" onclick="showSec('coupons')">🎟️ Coupons</div>
+            <div class="menu-item" style="margin-top: 50px;" id="btn-logout">🚪 Logout</div>
+        </aside>
+
+        <main class="admin-content">
+            <!-- Dashboard Section -->
+            <section id="sec-dash">
+                <h3>Live Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-card"><small>Total Orders</small><h3 id="stat-orders">0</h3></div>
+                    <div class="stat-card"><small>Total Revenue</small><h3 id="stat-rev">₹0</h3></div>
+                    <div class="stat-card"><small>Total Profit</small><h3 id="stat-profit">₹0</h3></div>
+                    <div class="stat-card"><small>Today Revenue</small><h3 id="stat-today">₹0</h3></div>
+                </div>
+                <button class="btn btn-dark" id="btn-csv">Export Orders to CSV</button>
+            </section>
+
+            <!-- Orders Section -->
+            <section id="sec-orders" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Order Management</h3>
+                    <input type="text" id="order-search" placeholder="Search by Phone..." style="width: 250px;">
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Product</th>
+                            <th>Amount</th>
+                            <th>Payment</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-orders-list"></tbody>
+                </table>
+            </section>
+
+            <!-- Products Section -->
+            <section id="sec-products" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Product Inventory</h3>
+                    <button class="btn btn-gold" onclick="openProductModal()">+ Add Product</button>
+                </div>
+                
+                <div id="product-form-container" style="display: none; background: white; padding: 20px; margin-bottom: 30px; border: 1px solid var(--gold);">
+                    <input type="hidden" id="p-id">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <input type="text" id="p-name" placeholder="Product Name">
+                        <input type="number" id="p-price" placeholder="Selling Price">
+                        <input type="number" id="p-cost" placeholder="Cost Price">
+                        <input type="number" id="p-stock" placeholder="Stock Quantity">
+                        <input type="text" id="p-img" placeholder="Image URL">
+                        <select id="p-cat"><option value="Saree">Saree</option><option value="Kurti">Kurti</option></select>
+                    </div>
+                    <button class="btn btn-gold" id="btn-save-product">Save Product</button>
+                </div>
+
+                <table>
+                    <thead><tr><th>Image</th><th>Name</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+                    <tbody id="admin-product-list"></tbody>
+                </table>
+            </section>
+
+            <!-- Coupons Section -->
+            <section id="sec-coupons" style="display: none;">
+                <h3>Coupon Management</h3>
+                <div style="background: white; padding: 20px; display: flex; gap: 10px; align-items: center;">
+                    <input type="text" id="c-code" placeholder="CODE10">
+                    <input type="number" id="c-disc" placeholder="Disc %">
+                    <button class="btn btn-gold" id="btn-save-coupon">Create</button>
+                </div>
+                <table style="margin-top: 20px;">
+                    <thead><tr><th>Code</th><th>Discount %</th><th>Actions</th></tr></thead>
+                    <tbody id="admin-coupon-list"></tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+    <script src="main.js" type="module"></script>
+</body>
+</html>
