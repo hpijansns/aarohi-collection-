@@ -3,84 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | Aarohi Collection</title>
+    <title>Admin Panel | Aarohi Collection</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body class="admin-body">
+<body class="admin-wrapper">
     <aside class="sidebar">
         <div class="logo">Aarohi<span>Admin</span></div>
-        <nav>
-            <a href="#" onclick="showSection('dash')"><i class="fa fa-chart-line"></i> Dashboard</a>
-            <a href="#" onclick="showSection('orders')"><i class="fa fa-shopping-bag"></i> Orders</a>
-            <a href="#" onclick="showSection('inventory')"><i class="fa fa-box"></i> Inventory</a>
-            <button id="logout-btn" class="logout-link"><i class="fa fa-sign-out"></i> Logout</button>
+        <nav class="sidebar-nav">
+            <button class="nav-btn active" onclick="showAdminSection('dashboard')">
+                <i class="fa-solid fa-chart-line"></i> Dashboard
+            </button>
+            <button class="nav-btn" onclick="showAdminSection('orders')">
+                <i class="fa-solid fa-shopping-bag"></i> Orders
+            </button>
+            <button class="nav-btn" onclick="showAdminSection('products')">
+                <i class="fa-solid fa-box"></i> Products
+            </button>
+            <button id="admin-logout" class="nav-btn logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
         </nav>
     </aside>
 
-    <main class="admin-content">
-        <section id="dash-section" class="admin-section">
-            <h2 class="section-title">Business Overview</h2>
-            <div class="kpi-grid" id="kpi-cards">
-                <!-- Injected via JS -->
+    <main class="admin-main">
+        <!-- Dashboard Section -->
+        <section id="section-dashboard" class="admin-section">
+            <h2 class="luxury-title">Business Intelligence</h2>
+            <div class="kpi-grid" id="kpi-container">
+                <!-- KPI Cards -->
             </div>
         </section>
 
-        <section id="orders-section" class="admin-section hidden">
-            <div class="section-header">
-                <h2>Manage Orders</h2>
-                <div class="table-filters">
-                    <input type="text" id="order-search" placeholder="Search phone/ID">
+        <!-- Orders Section -->
+        <section id="section-orders" class="admin-section hidden">
+            <div class="flex-between">
+                <h2 class="luxury-title">Order Management</h2>
+                <div class="admin-filters">
+                    <input type="text" id="order-search" placeholder="Search by phone...">
+                    <select id="status-filter">
+                        <option value="all">All Orders</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Confirmed">Confirmed</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Delivered">Delivered</option>
+                    </select>
                 </div>
             </div>
-            <div class="table-container">
-                <table>
+            <div class="table-scroll">
+                <table id="orders-table">
                     <thead>
                         <tr>
-                            <th>Order ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th><th>Actions</th>
+                            <th>Order ID</th><th>Customer</th><th>Product</th><th>Qty</th><th>Total</th><th>Status</th><th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="orders-tbody"></tbody>
+                    <tbody id="orders-list"></tbody>
                 </table>
             </div>
         </section>
 
-        <section id="inventory-section" class="admin-section hidden">
-            <div class="section-header">
-                <h2>Product Inventory</h2>
-                <button class="btn-gold" id="add-prod-btn">Add Product</button>
+        <!-- Products Section -->
+        <section id="section-products" class="admin-section hidden">
+            <div class="flex-between">
+                <h2 class="luxury-title">Inventory Control</h2>
+                <button class="btn-gold" onclick="toggleProductModal()">+ Add Luxury Product</button>
             </div>
-            <div class="table-container">
+            <div class="table-scroll">
                 <table>
                     <thead>
                         <tr>
-                            <th>Image</th><th>Name</th><th>Stock</th><th>Price</th><th>Active</th><th>Actions</th>
+                            <th>Img</th><th>Name</th><th>Stock</th><th>Price</th><th>Active</th><th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="products-tbody"></tbody>
+                    <tbody id="admin-product-list"></tbody>
                 </table>
             </div>
         </section>
     </main>
 
-    <!-- Product Modal (Hidden) -->
-    <div id="product-modal" class="modal-overlay hidden">
+    <!-- Product Modal -->
+    <div id="product-modal" class="modal hidden">
         <div class="modal-content">
-            <h3 id="modal-title">Product Form</h3>
+            <h3>Save Product</h3>
             <form id="product-form">
-                <input type="hidden" id="edit-id">
-                <input type="text" id="p-name" placeholder="Product Name" required>
-                <input type="number" id="p-price" placeholder="Selling Price" required>
-                <input type="number" id="p-cost" placeholder="Cost Price" required>
-                <input type="number" id="p-stock" placeholder="Stock Quantity" required>
-                <input type="text" id="p-img" placeholder="Image URL" required>
-                <select id="p-active">
-                    <option value="true">Active</option>
-                    <option value="false">Inactive</option>
-                </select>
-                <div class="modal-btns">
+                <input type="hidden" id="p-id">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="p-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="p-desc">
+                </div>
+                <div class="form-group grid-2">
+                    <div>
+                        <label>Price (₹)</label>
+                        <input type="number" id="p-price" required>
+                    </div>
+                    <div>
+                        <label>Cost Price (₹)</label>
+                        <input type="number" id="p-cost" required>
+                    </div>
+                </div>
+                <div class="form-group grid-2">
+                    <div>
+                        <label>Stock</label>
+                        <input type="number" id="p-stock" required>
+                    </div>
+                    <div>
+                        <label>Active</label>
+                        <select id="p-active">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Image URL</label>
+                    <input type="text" id="p-image" required>
+                </div>
+                <div class="modal-actions">
                     <button type="submit" class="btn-gold">Save Product</button>
-                    <button type="button" class="btn-close" onclick="closeModal()">Close</button>
+                    <button type="button" class="btn-light" onclick="toggleProductModal()">Cancel</button>
                 </div>
             </form>
         </div>
@@ -88,10 +132,19 @@
 
     <script type="module" src="main.js"></script>
     <script>
-        window.showSection = (id) => {
+        function showAdminSection(id) {
             document.querySelectorAll('.admin-section').forEach(s => s.classList.add('hidden'));
-            document.getElementById(id + '-section').classList.remove('hidden');
-        };
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('section-' + id).classList.remove('hidden');
+            event.currentTarget.classList.add('active');
+        }
+        function toggleProductModal() {
+            document.getElementById('product-modal').classList.toggle('hidden');
+            if(document.getElementById('product-modal').classList.contains('hidden')) {
+                document.getElementById('product-form').reset();
+                document.getElementById('p-id').value = '';
+            }
+        }
     </script>
 </body>
 </html>
