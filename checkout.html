@@ -3,49 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout | Aarohi Collection</title>
+    <title>Complete Your Order | Aarohi Collection</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body style="background: #F8F8F8;">
-    <nav>
-        <div class="container nav-flex">
-            <a href="index.html" class="logo">AAROHI<span>COLLECTION</span></a>
+<body style="background: var(--light-grey);">
+    <div class="container checkout-container">
+        <h1 class="luxury-text" style="text-align: center; margin-bottom: 30px;">Checkout</h1>
+        
+        <!-- Order Items -->
+        <div class="checkout-card" id="cart-items-container">
+            <!-- Dynamic Cart Items -->
         </div>
-    </nav>
 
-    <div class="checkout-wrapper">
+        <!-- Price Summary -->
         <div class="checkout-card">
-            <h2 style="margin-bottom: 25px; text-align: center;">Complete Your Order</h2>
-            
-            <div id="checkout-item" class="order-summary">
-                <!-- Injected via JS -->
+            <h3 style="margin-bottom: 15px;">Order Summary</h3>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span>Subtotal</span>
+                <span id="subtotal">₹0</span>
             </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span>Shipping</span>
+                <span style="color: var(--gold); font-weight: bold;">FREE</span>
+            </div>
+            <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--border);">
+            <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold;">
+                <span>Grand Total</span>
+                <span id="grand-total">₹0</span>
+            </div>
+        </div>
 
-            <form id="checkout-form">
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="cust-name" class="form-control" placeholder="Enter your full name" required>
-                </div>
-                <div class="form-group">
-                    <label>Phone Number</label>
-                    <input type="tel" id="cust-phone" class="form-control" placeholder="Enter 10-digit number" required>
-                </div>
-                <div class="form-group">
-                    <label>Complete Shipping Address</label>
-                    <textarea id="cust-address" class="form-control" rows="4" placeholder="House No, Street, Landmark, City, State, PIN" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Payment Method</label>
-                    <select id="cust-payment" class="form-control">
-                        <option value="COD">Cash on Delivery (COD)</option>
-                        <option value="UPI">UPI / PhonePe / GPay</option>
-                        <option value="Prepaid">Prepaid / Online Payment</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-gold" style="width: 100%; padding: 16px; font-size: 16px; margin-top: 10px;">
-                    Place Order Now
-                </button>
+        <!-- Shipping Form -->
+        <div class="checkout-card">
+            <h3 style="margin-bottom: 20px;">Shipping Details</h3>
+            <form id="order-form">
+                <input type="text" id="cust-name" placeholder="Full Name" style="width:100%; padding: 12px; margin-bottom: 15px; border: 1px solid var(--border);" required>
+                <input type="tel" id="cust-phone" placeholder="Phone Number" style="width:100%; padding: 12px; margin-bottom: 15px; border: 1px solid var(--border);" required>
+                <textarea id="cust-address" placeholder="Complete Shipping Address" style="width:100%; padding: 12px; margin-bottom: 15px; border: 1px solid var(--border); height: 100px;" required></textarea>
+                
+                <h4 style="margin-bottom: 10px;">Payment Method</h4>
+                <select id="payment-method" style="width:100%; padding: 12px; margin-bottom: 20px; border: 1px solid var(--border);">
+                    <option value="COD">Cash on Delivery</option>
+                    <option value="UPI">UPI / PhonePe / GPay</option>
+                    <option value="Prepaid">Prepaid Payment</option>
+                </select>
+
+                <button type="submit" class="btn-premium" id="place-order-btn">Place Order</button>
             </form>
+        </div>
+    </div>
+
+    <!-- Success Screen -->
+    <div id="success-overlay">
+        <div class="success-card">
+            <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+            <h1 class="luxury-text" style="color: var(--gold); margin-bottom: 15px;">Order Confirmed</h1>
+            <p style="color: #666; margin-bottom: 20px;">
+                Thank you for shopping with Aarohi Collection. Your order has been successfully placed.
+            </p>
+            <div style="background: var(--light-grey); padding: 15px; border-radius: 8px; margin-bottom: 25px;">
+                <span style="font-size: 13px; color: #999;">Order ID</span><br>
+                <strong id="display-order-id" style="font-size: 18px; letter-spacing: 1px;"></strong>
+            </div>
+            <a href="index.html" class="btn-premium" style="display: inline-block; text-decoration: none;">Continue Shopping</a>
+            <br><br>
+            <a href="https://wa.me/918332178525" style="color: var(--gold); text-decoration: none; font-size: 14px; font-weight: 600;">Contact Support</a>
         </div>
     </div>
 
