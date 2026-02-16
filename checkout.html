@@ -5,47 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout | Aarohi Collection</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
-<body class="checkout-page">
-    <nav class="navbar"><div class="container"><a href="index.html" class="logo">Aarohi<span>Collection</span></a></div></nav>
-
-    <div class="container checkout-container">
-        <div class="order-summary">
-            <h2>Order Summary</h2>
-            <div id="cart-items-list"></div>
-            <div class="coupon-box">
-                <input type="text" id="coupon-code" placeholder="Enter Coupon">
-                <button id="apply-coupon">Apply</button>
+<body class="bg-light">
+    <div class="container checkout-page">
+        <div class="checkout-grid">
+            <div class="card">
+                <h3>Delivery Details</h3>
+                <form id="checkout-form">
+                    <input type="text" id="cust-name" placeholder="Full Name" required>
+                    <input type="tel" id="cust-phone" placeholder="Phone Number" required>
+                    <textarea id="cust-address" placeholder="Complete Address" required></textarea>
+                    
+                    <h3>Payment Method</h3>
+                    <div class="payment-options">
+                        <label><input type="radio" name="payment" value="COD" checked> Cash on Delivery</label>
+                        <label><input type="radio" name="payment" value="UPI"> UPI / QR</label>
+                        <label><input type="radio" name="payment" value="Prepaid"> Prepaid</label>
+                    </div>
+                    <button type="submit" class="btn-gold w-100" id="place-order-btn">Place Order</button>
+                </form>
             </div>
-            <div class="total-section">
-                <p>Subtotal: <span id="subtotal">₹0</span></p>
-                <p>Discount: <span id="discount">₹0</span></p>
+
+            <div class="card">
+                <h3>Order Summary</h3>
+                <div id="checkout-items"></div>
                 <hr>
-                <h3>Total: <span id="final-total">₹0</span></h3>
+                <div class="flex-between">
+                    <strong>Total</strong>
+                    <strong id="checkout-total">₹0</strong>
+                </div>
             </div>
         </div>
-
-        <form id="order-form" class="order-form">
-            <h2>Delivery Details</h2>
-            <input type="text" id="cust-name" placeholder="Full Name" required>
-            <input type="tel" id="cust-phone" placeholder="Phone Number" required>
-            <textarea id="cust-address" placeholder="Complete Delivery Address" required></textarea>
-            
-            <h3>Payment Method</h3>
-            <div class="payment-options">
-                <label><input type="radio" name="payment" value="COD" checked> Cash on Delivery</label>
-                <label><input type="radio" name="payment" value="UPI"> UPI / QR</label>
-                <label><input type="radio" name="payment" value="Prepaid"> Prepaid Card</label>
-            </div>
-            
-            <button type="submit" id="place-order-btn" class="btn-gold-full">Complete Purchase</button>
-        </form>
     </div>
-
-    <script type="module">
-        import { initCheckout } from './main.js';
-        window.addEventListener('DOMContentLoaded', initCheckout);
-    </script>
+    <script type="module" src="main.js"></script>
 </body>
 </html>
