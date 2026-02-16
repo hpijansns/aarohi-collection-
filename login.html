@@ -5,15 +5,21 @@
     <title>Admin Login | Aarohi Collection</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body style="height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--light);">
-    <div class="modal" style="width: 100%; max-width: 400px; text-align: center;">
-        <h2 class="logo" style="margin-bottom: 20px;">AAROHI<span>ADMIN</span></h2>
+<body style="background: #F8F8F8; display: flex; align-items: center; justify-content: center; height: 100vh;">
+    <div class="checkout-card" style="width: 100%; max-width: 400px;">
+        <h2 class="logo" style="text-align: center; margin-bottom: 30px;">AAROHI<span>ADMIN</span></h2>
         <form id="login-form">
-            <input type="email" id="email" placeholder="Admin Email" required>
-            <input type="password" id="password" placeholder="Password" required>
+            <div class="form-group">
+                <label>Admin Email</label>
+                <input type="email" id="email" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" class="form-control" required>
+            </div>
             <button type="submit" class="btn-gold" style="width: 100%;">Authenticate</button>
         </form>
-        <p id="login-err" style="color: red; font-size: 12px; margin-top: 10px;"></p>
+        <p id="login-error" style="color: var(--status-cancelled); font-size: 14px; text-align: center; margin-top: 15px;"></p>
     </div>
     <script type="module" src="main.js"></script>
 </body>
