@@ -8,38 +8,44 @@
 </head>
 <body>
     <nav>
-        <a href="index.html" class="logo">AAROHI COLLECTION</a>
+        <a href="index.html" class="logo">AAROHI <span>COLLECTION</span></a>
     </nav>
 
-    <div class="container" style="max-width: 600px;">
-        <h2>Complete Your Order</h2>
-        <div id="cart-summary" style="margin-bottom: 20px; padding: 15px; background: #f9f9f9;">
-            <!-- Cart details injected here -->
-        </div>
+    <div class="container">
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px;">
+            <div>
+                <h3>Shipping Details</h3>
+                <form id="checkout-form">
+                    <input type="text" id="cust-name" placeholder="Full Name" required>
+                    <input type="tel" id="cust-phone" placeholder="Phone Number (10 digits)" required>
+                    <textarea id="cust-address" placeholder="Complete Address" required rows="4"></textarea>
+                    
+                    <h3>Payment Method</h3>
+                    <select id="pay-method">
+                        <option value="COD">Cash On Delivery</option>
+                        <option value="UPI">UPI / PhonePe / GPay</option>
+                        <option value="Prepaid">Debit/Credit Card</option>
+                    </select>
+                    
+                    <button type="submit" class="btn btn-gold" style="width: 100%; margin-top: 20px;">Place Order</button>
+                </form>
+            </div>
 
-        <form id="orderForm">
-            <div class="form-group">
-                <label>Full Name</label>
-                <input type="text" id="name" required placeholder="Enter your name">
+            <div style="background: white; padding: 25px; border: 1px solid var(--border);">
+                <h3>Order Summary</h3>
+                <div id="summary-items" style="margin: 20px 0;"></div>
+                <hr>
+                <div style="margin: 15px 0;">
+                    <input type="text" id="coupon-code" placeholder="Coupon Code" style="width: 70%;">
+                    <button class="btn btn-outline" onclick="applyCoupon()" style="width: 25%; padding: 10px;">Apply</button>
+                </div>
+                <div id="coupon-msg"></div>
+                <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem; margin-top: 15px;">
+                    <span>Total</span>
+                    <span id="total-amt">₹0</span>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Phone Number (10 digits)</label>
-                <input type="tel" id="phone" pattern="[0-9]{10}" required placeholder="9876543210">
-            </div>
-            <div class="form-group">
-                <label>Shipping Address</label>
-                <textarea id="address" required rows="3"></textarea>
-            </div>
-            <div class="form-group">
-                <label>Payment Method</label>
-                <select id="paymentMethod">
-                    <option value="COD">Cash on Delivery (COD)</option>
-                    <option value="UPI">UPI</option>
-                    <option value="Prepaid">Prepaid (Card/Netbanking)</option>
-                </select>
-            </div>
-            <button type="submit" class="btn-gold" style="width:100%">Place Order</button>
-        </form>
+        </div>
     </div>
 
     <script src="main.js" type="module"></script>
