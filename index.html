@@ -5,42 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aarohi Collection | Luxury Women's Fashion</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <nav>
-        <div class="container nav-flex">
-            <a href="index.html" class="logo">AAROHI<span>COLLECTION</span></a>
-            <a href="checkout.html" class="cart-icon">
-                <i class="fa-solid fa-bag-shopping"></i>
-                <span id="cart-count">0</span>
+    <nav style="padding: 20px 0; border-bottom: 1px solid var(--border);">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="index.html" style="text-decoration: none; color: black;"><h2 class="luxury-text">AAROHI<span>COLLECTION</span></h2></a>
+            <a href="checkout.html" style="position: relative; color: black; text-decoration: none;">
+                <i class="fa-solid fa-bag-shopping" style="font-size: 22px;"></i>
+                <span id="cart-count" style="position: absolute; top: -10px; right: -10px; background: var(--gold); color: white; font-size: 10px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">0</span>
             </a>
         </div>
     </nav>
 
-    <header class="hero">
-        <div class="hero-content">
-            <h1>Timeless Elegance</h1>
-            <p>Curated Luxury Fashion for the Modern Woman</p>
-            <a href="#shop" class="btn-gold" style="margin-top: 20px;">Explore Collection</a>
-        </div>
-    </header>
-
-    <main class="container" id="shop">
-        <div id="product-grid" class="product-grid">
-            <!-- Products loaded via JS -->
+    <main class="container" id="shop" style="padding-top: 40px;">
+        <div id="product-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; margin-bottom: 80px;">
+            <!-- Products will be injected here via main.js -->
         </div>
     </main>
-
-    <footer style="background: var(--dark); color: white; padding: 60px 0; text-align: center;">
-        <div class="container">
-            <h2 class="logo" style="color: white; margin-bottom: 20px;">AAROHI<span>COLLECTION</span></h2>
-            <p style="opacity: 0.6;">Premium ethnic and western wear for every occasion.</p>
-            <div style="margin-top: 30px; font-size: 14px; opacity: 0.4;">
-                &copy; 2024 Aarohi Collection. All rights reserved.
-            </div>
-        </div>
-    </footer>
 
     <script type="module" src="main.js"></script>
 </body>
