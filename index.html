@@ -3,35 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aarohi Collection | Premium Women Fashion</title>
+    <title>Aarohi Collection | Luxury Women's Fashion</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <nav>
         <a href="index.html" class="logo">AAROHI <span>COLLECTION</span></a>
-        <div class="nav-icons">
-            <a href="admin.html">Admin</a>
-            <div class="cart-btn" onclick="location.href='checkout.html'">
-                🛒 Cart <span id="cart-count" class="cart-count">0</span>
+        <div class="nav-right">
+            <div class="cart-icon" onclick="location.href='checkout.html'">
+                🛒 SHOPPING BAG <span id="cart-count">0</span>
             </div>
         </div>
     </nav>
 
     <header class="hero">
         <div>
-            <h1>Elegant Traditions</h1>
-            <p>Exclusive handcrafted collections for the modern woman</p>
-            <br>
-            <button class="btn btn-gold" onclick="document.getElementById('shop').scrollIntoView()">Shop Now</button>
+            <h1>Elegant Styles for Her</h1>
+            <p>Handpicked Premium Quality Fashion</p>
         </div>
     </header>
 
-    <section class="container" id="shop">
-        <h2 style="text-align: center; margin-bottom: 40px;">Latest Arrivals</h2>
+    <div class="container">
+        <h2 style="margin-bottom: 30px; text-align: center; font-family: 'Playfair Display';">The Collection</h2>
         <div class="grid" id="product-grid">
-            <!-- Products loaded via JS -->
+            <!-- Products loaded from Firebase -->
         </div>
-    </section>
+    </div>
 
     <script src="main.js" type="module"></script>
 </body>
