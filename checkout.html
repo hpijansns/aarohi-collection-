@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Aarohi Collection</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo">AAROHI COLLECTION</a>
+    </nav>
+
+    <div class="container" style="max-width: 600px;">
+        <h2>Complete Your Order</h2>
+        <div id="cart-summary" style="margin-bottom: 20px; padding: 15px; background: #f9f9f9;">
+            <!-- Cart details injected here -->
+        </div>
+
+        <form id="orderForm">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="name" required placeholder="Enter your name">
+            </div>
+            <div class="form-group">
+                <label>Phone Number (10 digits)</label>
+                <input type="tel" id="phone" pattern="[0-9]{10}" required placeholder="9876543210">
+            </div>
+            <div class="form-group">
+                <label>Shipping Address</label>
+                <textarea id="address" required rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Payment Method</label>
+                <select id="paymentMethod">
+                    <option value="COD">Cash on Delivery (COD)</option>
+                    <option value="UPI">UPI</option>
+                    <option value="Prepaid">Prepaid (Card/Netbanking)</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-gold" style="width:100%">Place Order</button>
+        </form>
+    </div>
+
+    <script src="main.js" type="module"></script>
+</body>
+</html>
