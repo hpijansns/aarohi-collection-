@@ -2,17 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Login | Aarohi</title>
+    <title>Admin Login</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body style="display: flex; align-items: center; justify-content: center; height: 100vh; background: #f0f0f0;">
-    <div style="background: white; padding: 40px; border-radius: 8px; box-shadow: var(--shadow); width: 350px; text-align: center;">
-        <h2 class="logo">AAROHI <span>ADMIN</span></h2>
-        <p style="margin-bottom: 20px; font-size: 13px;">Please login to access dashboard</p>
-        <input type="email" id="login-email" placeholder="Admin Email">
+<body style="display:flex; align-items:center; justify-content:center; height:100vh;">
+    <div style="background:white; padding:40px; border-radius:12px; box-shadow:var(--shadow); width:350px;">
+        <h2 style="text-align:center; margin-bottom:20px;">Admin Login</h2>
+        <input type="email" id="login-email" placeholder="Email">
         <input type="password" id="login-pass" placeholder="Password">
-        <button class="btn btn-gold" id="btn-login" style="width: 100%; margin-top: 10px;">Login</button>
-        <p id="login-err" style="color: red; font-size: 12px; margin-top: 10px;"></p>
+        <button id="login-btn" class="btn btn-gold" style="width:100%; margin-top:10px;">Login</button>
+        <p id="err" style="color:red; font-size:12px; margin-top:10px; text-align:center;"></p>
     </div>
     <script src="main.js" type="module"></script>
 </body>
