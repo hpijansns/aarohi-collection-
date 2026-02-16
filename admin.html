@@ -2,43 +2,74 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Dashboard | Aarohi Collection</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Pro Dashboard | Aarohi Collection</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="admin-wrapper" id="admin-body" style="display: none;">
+    <div class="admin-container" id="admin-root" style="display: none;">
         <aside class="sidebar">
             <h2>AAROHI</h2>
-            <div class="menu-item active" onclick="showSec('dash')">📊 Dashboard</div>
-            <div class="menu-item" onclick="showSec('orders')">📦 Orders</div>
-            <div class="menu-item" onclick="showSec('products')">👗 Products</div>
-            <div class="menu-item" onclick="showSec('coupons')">🎟️ Coupons</div>
-            <div class="menu-item" style="margin-top: 50px;" id="btn-logout">🚪 Logout</div>
+            <div class="nav-link active" onclick="switchTab('dash')">📊 <span>Dashboard</span></div>
+            <div class="nav-link" onclick="switchTab('orders')">📦 <span>Orders</span></div>
+            <div class="nav-link" onclick="switchTab('inventory')">👗 <span>Inventory</span></div>
+            <div class="nav-link" onclick="switchTab('coupons')">🎟️ <span>Coupons</span></div>
+            <div class="nav-link" style="margin-top: auto; color: #ff7675;" id="logout-btn">🚪 <span>Logout</span></div>
         </aside>
 
-        <main class="admin-content">
-            <!-- Dashboard Section -->
-            <section id="sec-dash">
-                <h3>Live Statistics</h3>
+        <main class="main-content">
+            <!-- Alert Section -->
+            <div id="business-alerts" class="alert-box">
+                <h4 style="margin-bottom: 10px;">⚡ Business Intelligence Alerts</h4>
+                <div id="alert-items"></div>
+            </div>
+
+            <!-- Tab: Dashboard -->
+            <section id="tab-dash">
                 <div class="stats-grid">
-                    <div class="stat-card"><small>Total Orders</small><h3 id="stat-orders">0</h3></div>
-                    <div class="stat-card"><small>Total Revenue</small><h3 id="stat-rev">₹0</h3></div>
-                    <div class="stat-card"><small>Total Profit</small><h3 id="stat-profit">₹0</h3></div>
-                    <div class="stat-card"><small>Today Revenue</small><h3 id="stat-today">₹0</h3></div>
+                    <div class="stat-card" onclick="filterByStatus('Pending')"><small>Pending Orders</small><h3 id="m-pending">0</h3></div>
+                    <div class="stat-card"><small>Today Revenue</small><h3 id="m-today-rev">₹0</h3></div>
+                    <div class="stat-card"><small>Monthly Revenue</small><h3 id="m-month-rev">₹0</h3></div>
+                    <div class="stat-card"><small>Total Profit</small><h3 id="m-profit" style="color: var(--success)">₹0</h3></div>
+                    <div class="stat-card"><small>Average Order (AOV)</small><h3 id="m-aov">₹0</h3></div>
+                    <div class="stat-card"><small>Total Customers</small><h3 id="m-cust">0</h3></div>
+                    <div class="stat-card" style="border-bottom-color: var(--danger);"><small>Low Stock Items</small><h3 id="m-lowstock">0</h3></div>
+                    <div class="stat-card"><small>Total Orders</small><h3 id="m-total-orders">0</h3></div>
                 </div>
-                <button class="btn btn-dark" id="btn-csv">Export Orders to CSV</button>
+
+                <div class="charts-grid">
+                    <div class="chart-container"><canvas id="revChart"></canvas></div>
+                    <div class="chart-container"><canvas id="payChart"></canvas></div>
+                </div>
             </section>
 
-            <!-- Orders Section -->
-            <section id="sec-orders" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h3>Order Management</h3>
-                    <input type="text" id="order-search" placeholder="Search by Phone..." style="width: 250px;">
+            <!-- Tab: Orders -->
+            <section id="tab-orders" style="display: none;">
+                <div class="filter-bar">
+                    <input type="text" id="search-order" placeholder="Search Phone/Order ID...">
+                    <select id="filter-status">
+                        <option value="">All Status</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Confirmed">Confirmed</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                    <select id="filter-pay">
+                        <option value="">All Payments</option>
+                        <option value="COD">COD</option>
+                        <option value="UPI">UPI</option>
+                        <option value="Prepaid">Prepaid</option>
+                    </select>
+                    <button class="btn btn-gold" onclick="exportOrders()">Export CSV</button>
                 </div>
+
                 <table>
                     <thead>
                         <tr>
                             <th>Order ID</th>
+                            <th>Aging</th>
                             <th>Customer</th>
                             <th>Product</th>
                             <th>Amount</th>
@@ -47,51 +78,36 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="admin-orders-list"></tbody>
+                    <tbody id="orders-tbody"></tbody>
                 </table>
             </section>
 
-            <!-- Products Section -->
-            <section id="sec-products" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h3>Product Inventory</h3>
+            <!-- Tab: Inventory -->
+            <section id="tab-inventory" style="display: none;">
+                <div style="display:flex; justify-content: space-between; margin-bottom: 20px;">
+                    <h3>Product Management</h3>
                     <button class="btn btn-gold" onclick="openProductModal()">+ Add Product</button>
                 </div>
-                
-                <div id="product-form-container" style="display: none; background: white; padding: 20px; margin-bottom: 30px; border: 1px solid var(--gold);">
+                <div id="product-form" style="display: none; background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
                     <input type="hidden" id="p-id">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <input type="text" id="p-name" placeholder="Product Name">
-                        <input type="number" id="p-price" placeholder="Selling Price">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                        <input type="text" id="p-name" placeholder="Name">
+                        <input type="number" id="p-price" placeholder="Sale Price">
                         <input type="number" id="p-cost" placeholder="Cost Price">
-                        <input type="number" id="p-stock" placeholder="Stock Quantity">
+                        <input type="number" id="p-stock" placeholder="Stock">
                         <input type="text" id="p-img" placeholder="Image URL">
                         <select id="p-cat"><option value="Saree">Saree</option><option value="Kurti">Kurti</option></select>
                     </div>
-                    <button class="btn btn-gold" id="btn-save-product">Save Product</button>
+                    <button class="btn btn-gold" style="margin-top: 10px;" id="save-p-btn">Save Product</button>
                 </div>
-
                 <table>
-                    <thead><tr><th>Image</th><th>Name</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
-                    <tbody id="admin-product-list"></tbody>
-                </table>
-            </section>
-
-            <!-- Coupons Section -->
-            <section id="sec-coupons" style="display: none;">
-                <h3>Coupon Management</h3>
-                <div style="background: white; padding: 20px; display: flex; gap: 10px; align-items: center;">
-                    <input type="text" id="c-code" placeholder="CODE10">
-                    <input type="number" id="c-disc" placeholder="Disc %">
-                    <button class="btn btn-gold" id="btn-save-coupon">Create</button>
-                </div>
-                <table style="margin-top: 20px;">
-                    <thead><tr><th>Code</th><th>Discount %</th><th>Actions</th></tr></thead>
-                    <tbody id="admin-coupon-list"></tbody>
+                    <thead><tr><th>Image</th><th>Name</th><th>Price</th><th>Cost</th><th>Stock</th><th>Actions</th></tr></thead>
+                    <tbody id="inventory-tbody"></tbody>
                 </table>
             </section>
         </main>
     </div>
+    <audio id="order-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
     <script src="main.js" type="module"></script>
 </body>
 </html>
