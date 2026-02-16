@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aarohi Collection | Luxury Women's Fashion</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <nav>
-        <div class="container flex-between">
+        <div class="container nav-flex">
             <a href="index.html" class="logo">AAROHI<span>COLLECTION</span></a>
-            <a href="checkout.html" class="cart-link">
+            <a href="checkout.html" class="cart-icon">
                 <i class="fa-solid fa-bag-shopping"></i>
                 <span id="cart-count">0</span>
             </a>
@@ -22,18 +22,24 @@
         <div class="hero-content">
             <h1>Timeless Elegance</h1>
             <p>Curated Luxury Fashion for the Modern Woman</p>
-            <a href="#shop" class="btn-gold">Explore Collection</a>
+            <a href="#shop" class="btn-gold" style="margin-top: 20px;">Explore Collection</a>
         </div>
     </header>
 
     <main class="container" id="shop">
-        <div id="product-grid" class="grid">
-            <!-- Loaded by JavaScript -->
+        <div id="product-grid" class="product-grid">
+            <!-- Products loaded via JS -->
         </div>
     </main>
 
-    <footer style="padding: 40px 0; text-align: center; border-top: 1px solid #eee;">
-        <p>&copy; 2024 Aarohi Collection. Premium Design Studio.</p>
+    <footer style="background: var(--dark); color: white; padding: 60px 0; text-align: center;">
+        <div class="container">
+            <h2 class="logo" style="color: white; margin-bottom: 20px;">AAROHI<span>COLLECTION</span></h2>
+            <p style="opacity: 0.6;">Premium ethnic and western wear for every occasion.</p>
+            <div style="margin-top: 30px; font-size: 14px; opacity: 0.4;">
+                &copy; 2024 Aarohi Collection. All rights reserved.
+            </div>
+        </div>
     </footer>
 
     <script type="module" src="main.js"></script>
