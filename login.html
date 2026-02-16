@@ -2,17 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Login</title>
+    <title>Admin Login | Aarohi Collection</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body style="display: flex; align-items: center; justify-content: center; height: 100vh;">
-    <form id="login-form" style="background: white; padding: 40px; border-radius: 8px; box-shadow: var(--shadow); width: 350px; text-align: center;">
-        <h2 class="logo">AAROHI <span>ADMIN</span></h2>
-        <input type="email" id="email" placeholder="Email" required style="width: 100%; margin: 20px 0 10px; padding: 10px;">
-        <input type="password" id="pass" placeholder="Password" required style="width: 100%; margin-bottom: 20px; padding: 10px;">
-        <button type="submit" class="btn btn-dark" style="width: 100%;">Login</button>
-        <p id="error" style="color: red; font-size: 12px; margin-top: 10px;"></p>
-    </form>
-    <script src="main.js" type="module"></script>
+<body class="login-page">
+    <div class="login-card">
+        <div class="logo">Aarohi<span>Admin</span></div>
+        <form id="login-form">
+            <input type="email" id="admin-email" placeholder="Email" required>
+            <input type="password" id="admin-pass" placeholder="Password" required>
+            <button type="submit" class="btn-gold-full">Authenticate</button>
+        </form>
+        <p id="login-err" style="color:red; margin-top:10px"></p>
+    </div>
+    <script type="module">
+        import { initLogin } from './main.js';
+        window.addEventListener('DOMContentLoaded', initLogin);
+    </script>
 </body>
 </html>
