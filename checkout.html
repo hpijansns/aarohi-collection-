@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout | Aarohi Collection</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body class="bg-luxury">
+<body class="bg-light">
     <nav class="navbar">
         <div class="container">
             <a href="index.html" class="logo">Aarohi<span>Collection</span></a>
@@ -17,59 +17,50 @@
 
     <div class="container checkout-container">
         <div class="checkout-card">
-            <h2 class="luxury-title">Order Summary</h2>
-            <div id="cart-item-list">
-                <!-- Injected via JS -->
+            <h2 class="luxury-title">Your Order Summary</h2>
+            <div id="checkout-cart-list">
+                <!-- Cart Items -->
             </div>
-            <div class="order-total-row">
-                <span>Grand Total:</span>
-                <span id="grand-total">₹0</span>
+            <div class="total-section">
+                <div class="total-row">
+                    <span>Subtotal</span>
+                    <span id="subtotal">₹0</span>
+                </div>
+                <div class="total-row grand-total">
+                    <span>Grand Total</span>
+                    <span id="grand-total">₹0</span>
+                </div>
             </div>
         </div>
 
         <div class="checkout-card">
-            <h2 class="luxury-title">Delivery Details</h2>
-            <form id="order-form">
+            <h2 class="luxury-title">Shipping & Contact Details</h2>
+            <form id="checkout-form">
                 <div class="form-group">
                     <label>Full Name</label>
-                    <input type="text" id="cust-name" placeholder="Enter your name" required>
+                    <input type="text" id="cust-name" placeholder="Enter your full name" required>
                 </div>
                 <div class="form-group">
                     <label>Phone Number</label>
-                    <input type="tel" id="cust-phone" placeholder="Enter 10-digit number" required>
+                    <input type="tel" id="cust-phone" placeholder="Enter 10 digit number" required>
                 </div>
                 <div class="form-group">
-                    <label>Complete Address</label>
-                    <textarea id="cust-address" placeholder="House No, Street, City, Landmark, ZIP" rows="4" required></textarea>
+                    <label>Delivery Address</label>
+                    <textarea id="cust-address" placeholder="Flat No, Street, Landmark, City, Pincode" required></textarea>
                 </div>
                 <div class="form-group">
                     <label>Payment Method</label>
                     <select id="payment-method">
                         <option value="COD">Cash on Delivery (COD)</option>
-                        <option value="UPI">UPI / QR Payment</option>
-                        <option value="Prepaid">Prepaid Card</option>
+                        <option value="UPI">UPI / Digital Wallet</option>
+                        <option value="Prepaid">Prepaid / Credit Card</option>
                     </select>
                 </div>
-                <button type="submit" id="place-order-btn" class="btn-gold-full">Complete Purchase</button>
+                <button type="submit" id="submit-order-btn" class="btn-gold-full">
+                    <span id="btn-text">Place Luxury Order</span>
+                    <div id="loader" class="btn-loader hidden"></div>
+                </button>
             </form>
-        </div>
-    </div>
-
-    <!-- Success Screen Overlay -->
-    <div id="success-overlay" class="hidden">
-        <div class="success-card">
-            <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
-            <h2>Order Confirmed Successfully</h2>
-            <p>Thank you for shopping with Aarohi Collection.</p>
-            <div class="order-id-box">
-                <span>Order ID:</span>
-                <strong id="display-order-id"></strong>
-            </div>
-            <p class="success-note">Your order is being processed. We will notify you once it is shipped.</p>
-            <div class="success-actions">
-                <a href="index.html" class="btn-gold">Continue Shopping</a>
-                <a href="https://wa.me/918332178525" class="btn-wa"><i class="fab fa-whatsapp"></i> Contact Support</a>
-            </div>
         </div>
     </div>
 
