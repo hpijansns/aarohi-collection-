@@ -7,19 +7,19 @@
 </head>
 <body>
     <nav><a href="index.html" class="logo">AAROHI <span>COLLECTION</span></a></nav>
-    <div class="main-content" style="margin-left:0; max-width: 800px; margin: 40px auto; background:white; padding: 30px; border-radius:12px; box-shadow:var(--shadow);">
-        <h2>Complete Your Order</h2>
-        <div id="checkout-summary" style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 8px;"></div>
-        <form id="place-order-form">
+    <div class="container" style="max-width: 600px;">
+        <div id="cart-summary" style="margin-bottom: 20px; background: white; padding: 20px; border-radius: 8px;"></div>
+        <form id="order-form" style="background: white; padding: 30px; border-radius: 8px; box-shadow: var(--shadow);">
+            <h3>Delivery Details</h3>
             <input type="text" id="cust-name" placeholder="Full Name" required>
-            <input type="tel" id="cust-phone" placeholder="WhatsApp Number" required>
-            <textarea id="cust-address" placeholder="Shipping Address" rows="4" required style="width: 100%; padding:10px; border:1px solid #ddd; border-radius:6px; margin-bottom:10px;"></textarea>
-            <select id="cust-pay" style="width:100%; margin-bottom:20px;">
+            <input type="tel" id="cust-phone" placeholder="Phone Number" required>
+            <textarea id="cust-address" placeholder="Full Address" required style="width:100%; padding:10px; margin: 10px 0; border:1px solid #ddd;"></textarea>
+            <select id="pay-method" style="width:100%; padding:10px; margin-bottom: 20px;">
                 <option value="COD">Cash on Delivery</option>
                 <option value="UPI">UPI Payment</option>
-                <option value="Prepaid">Prepaid (Card/Netbanking)</option>
+                <option value="Prepaid">Prepaid</option>
             </select>
-            <button type="submit" class="btn btn-gold" style="width:100%; font-size:16px;">Place Order</button>
+            <button type="submit" class="btn btn-gold" style="width: 100%;">Place Order</button>
         </form>
     </div>
     <script src="main.js" type="module"></script>
