@@ -6,40 +6,46 @@
     <title>Checkout | Aarohi Collection</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body style="background: var(--light);">
+<body style="background: #F8F8F8;">
     <nav>
-        <div class="container"><a href="index.html" class="logo">AAROHI<span>COLLECTION</span></a></div>
+        <div class="container nav-flex">
+            <a href="index.html" class="logo">AAROHI<span>COLLECTION</span></a>
+        </div>
     </nav>
 
-    <div class="container" style="max-width: 900px; padding: 40px 20px;">
-        <div style="display: grid; grid-template-columns: 1fr 350px; gap: 30px;">
-            <div class="modal">
-                <h3>Delivery Details</h3>
-                <form id="checkout-form">
-                    <input type="text" id="cust-name" placeholder="Full Name" required>
-                    <input type="tel" id="cust-phone" placeholder="Phone Number" required>
-                    <textarea id="cust-address" placeholder="Full Address (House No, Street, City, ZIP)" rows="4" required></textarea>
-                    <h3>Payment Method</h3>
-                    <select id="payment-method">
-                        <option value="COD">Cash on Delivery</option>
-                        <option value="UPI">UPI / QR Code</option>
-                        <option value="Prepaid">Prepaid Card</option>
-                    </select>
-                    <button type="submit" class="btn-gold" style="width: 100%;">Place Luxury Order</button>
-                </form>
+    <div class="checkout-wrapper">
+        <div class="checkout-card">
+            <h2 style="margin-bottom: 25px; text-align: center;">Complete Your Order</h2>
+            
+            <div id="checkout-item" class="order-summary">
+                <!-- Injected via JS -->
             </div>
 
-            <div class="modal" id="order-summary-box">
-                <h3>Order Summary</h3>
-                <div id="checkout-item-details" style="margin-top: 20px;">
-                    <!-- Injected by main.js -->
+            <form id="checkout-form">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="cust-name" class="form-control" placeholder="Enter your full name" required>
                 </div>
-                <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
-                <div class="flex-between">
-                    <strong>Total Amount:</strong>
-                    <strong id="final-total" style="color: var(--gold); font-size: 20px;">₹0</strong>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="cust-phone" class="form-control" placeholder="Enter 10-digit number" required>
                 </div>
-            </div>
+                <div class="form-group">
+                    <label>Complete Shipping Address</label>
+                    <textarea id="cust-address" class="form-control" rows="4" placeholder="House No, Street, Landmark, City, State, PIN" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <select id="cust-payment" class="form-control">
+                        <option value="COD">Cash on Delivery (COD)</option>
+                        <option value="UPI">UPI / PhonePe / GPay</option>
+                        <option value="Prepaid">Prepaid / Online Payment</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-gold" style="width: 100%; padding: 16px; font-size: 16px; margin-top: 10px;">
+                    Place Order Now
+                </button>
+            </form>
         </div>
     </div>
 
