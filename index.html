@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aarohi Collection | Luxury Fashion</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo">AAROHI COLLECTION</a>
+        <div class="cart-icon" onclick="location.href='checkout.html'">
+            🛒 Cart <span id="cart-count">0</span>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1>Timeless Elegance</h1>
+        <p>Curated Women's Fashion for Every Occasion</p>
+    </header>
+
+    <section class="container">
+        <h2 style="text-align:center">Our Collection</h2>
+        <div class="product-grid" id="product-list">
+            <!-- Demo Products -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?q=80&w=1000" alt="Saree">
+                <h3>Royal Silk Saree</h3>
+                <p>₹4,999</p>
+                <button class="btn-gold" onclick="addToCart('Royal Silk Saree', 4999)">Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=1000" alt="Anarkali">
+                <h3>Designer Anarkali</h3>
+                <p>₹3,499</p>
+                <button class="btn-gold" onclick="addToCart('Designer Anarkali', 3499)">Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?q=80&w=1000" alt="Kurta">
+                <h3>Chanderi Kurta Set</h3>
+                <p>₹2,199</p>
+                <button class="btn-gold" onclick="addToCart('Chanderi Kurta Set', 2199)">Add to Cart</button>
+            </div>
+        </div>
+    </section>
+
+    <script src="main.js" type="module"></script>
+</body>
+</html>
