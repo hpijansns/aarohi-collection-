@@ -5,15 +5,14 @@
     <title>Admin Login | Aarohi Collection</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="flex-center bg-light">
-    <div class="login-card">
-        <h2 class="logo">AAROHI<span>ADMIN</span></h2>
+<body style="display: flex; align-items: center; justify-content: center; height: 100vh; background: var(--light);">
+    <div class="kpi-card" style="width: 100%; max-width: 400px; text-align: center;">
+        <h2 class="logo" style="margin-bottom: 30px;">AAROHI<span> ADMIN</span></h2>
         <form id="login-form">
             <input type="email" id="email" placeholder="Admin Email" required>
             <input type="password" id="password" placeholder="Password" required>
-            <button type="submit" class="btn-gold w-100">Authenticate</button>
+            <button type="submit" class="btn-gold" style="width:100%">Authenticate</button>
         </form>
-        <p id="login-error" class="error"></p>
     </div>
     <script type="module" src="main.js"></script>
 </body>
