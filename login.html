@@ -5,21 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login | Aarohi Collection</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
-<body class="bg-luxury flex-center">
+<body class="flex-center bg-light">
     <div class="login-card">
         <div class="logo">Aarohi<span>Admin</span></div>
         <form id="login-form">
             <div class="form-group">
-                <input type="email" id="admin-email" placeholder="Email" required>
+                <label>Admin Email</label>
+                <input type="email" id="email" required>
             </div>
             <div class="form-group">
-                <input type="password" id="admin-pass" placeholder="Password" required>
+                <label>Password</label>
+                <input type="password" id="password" required>
             </div>
             <button type="submit" class="btn-gold-full">Authenticate</button>
+            <p id="login-error" class="error-msg hidden">Invalid credentials</p>
         </form>
-        <p id="login-error" class="error-text"></p>
     </div>
     <script type="module" src="main.js"></script>
 </body>
